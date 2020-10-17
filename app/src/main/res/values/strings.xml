@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">WithPresso</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sign_in">Sign in</string>
+    <string name="email">EMAIL</string>
+    <string name="password">PASSWORD</string>
+    <string name="kakao_talk">Kakao talk</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="cafe_recommend">CAFE RECOMMEND</string>
+    <string name="cafe_name">CAFE NAME</string>
+    <string name="cafe_basic_info">카페 기본 정보</string>
+    <string name="oper_time_index">운영시간</string>
+    <string name="oper_time_info">10:00 - 22:00</string>
+    <string name="log_in">Log in</string>
+    <string name="log_in_or_my_page">log_in_or_my_page</string>
+    <string name="my_page_nickname">MELAN</string>
+    <string name="coupon">COUPON</string>
+    <string name="change">CHANGE</string>
+    <string name="survey">SURVEY</string>
+    <string name="coupon_discount_info">melancholic_1\n$1 discount coupon</string>
+    <string name="re_confirm_password">RE-CONFIRM PASSWORD</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="nickname">NICKNAME</string>
+    <string name="sign_up_title">SIGN UP</string>
+    <string name="my_page">MY PAGE</string>
+    <string name="review">REVIEW</string>
+    <string name="logout">LOGOUT</string>
+    <string name="cleanliness">CLEANLINESS</string>
+    <string name="submit">SUBMIT</string>
+    <string name="phone_number_except">PHONE NUMBER EXCEPT \'-\'</string>
+    <string name="wide_table">1. WIDE TABLE</string>
+    <string name="survey_phrase">Which cafe do you prefer?\nPlease choose three.</string>
+</resources>

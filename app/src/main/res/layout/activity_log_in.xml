@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/log_in_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/log_in_back_button"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:padding="0dp"
+            android:src="@drawable/back_arrow"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center_vertical|left" />
+
+        <TextView
+            android:id="@+id/log_in_title_text"
+            style="@style/sign_in_title_style"
+            android:text="@string/log_in" />
+
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/log_in_email_edit"
+        style="@style/sign_in_edit_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:autofillHints="@string/email"
+        android:ems="10"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/log_in_password_edit"
+        style="@style/sign_in_edit_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:autofillHints="@string/password"
+        android:ems="10"
+        android:hint="@string/password"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/log_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="8dp"
+        android:background="#00FFFFFF"
+        android:text="@string/confirm" />
+
+    <Button
+        android:id="@+id/sign_up_mem_button"
+        style="@style/sign_up_button"
+        android:layout_marginTop="80dp"
+        android:background="#8F8686"
+        android:text="@string/sign_up" />
+
+    <Button
+        android:id="@+id/sign_up_kakao_button"
+        style="@style/sign_up_button"
+        android:layout_marginTop="16dp"
+        android:background="@color/kakao"
+        android:text="@string/kakao_talk" />
+
+</LinearLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:context=".fragment.CouponFragment">
+
+    <ImageView
+        android:id="@+id/coupon_cafe_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/melancholic_head" />
+
+    <TextView
+        android:id="@+id/coupon_discount_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:padding="4dp"
+        android:text="@string/coupon_discount_info"
+        android:textSize="24sp"
+        android:textStyle="italic"
+        android:fontFamily="@font/basic"
+        android:layout_gravity="center_vertical"/>
+
+</LinearLayout>
