@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.signature.ObjectKey
 import kotlinx.android.synthetic.main.activity_my_page.*
 import java.io.ByteArrayOutputStream
@@ -64,11 +63,20 @@ class MyPageActivity : AppCompatActivity() {
         }
 
         my_page_logout_layout.setOnClickListener {
-            val defaultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.default_profile)
-            val bitmapString = bitmapToString(defaultBitmap)
+//            val defaultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.default_profile)
+//            val bitmapString = bitmapToString(defaultBitmap)
+//            val edit = pref.edit()
+//            edit.clear()
+//            edit.putString("profile", bitmapString)
+//            edit.commit()
+
             val edit = pref.edit()
-            edit.clear()
-            edit.putString("profile", bitmapString)
+            edit.putString("email", "")
+            edit.putString("password", "")
+            edit.putString("phone", "")
+            edit.putString("nickname", "")
+            edit.putString("profile_uri", "")
+            edit.putString("profile_sig", "0")
             edit.commit()
 
             onBackPressed()
@@ -87,20 +95,6 @@ class MyPageActivity : AppCompatActivity() {
             .signature(ObjectKey(signature!!))
             .centerCrop()
             .into(my_page_profile_image)
-
-        /*
-            val email = pref.getString("email", "")
-            val password = pref.getString("password", "")
-            val profile = pref.getString("profile", "")
-            val nickname = pref.getString("nickname", "")
-
-            val edit = pref.edit()
-            edit.putString("email", email)
-            edit.putString("password", password)
-            edit.putString("profile", profile)
-            edit.putString("nickname", nickname)
-            edit.commit()
-        */
     }
 
     override fun onPause() {
@@ -176,7 +170,7 @@ class MyPageActivity : AppCompatActivity() {
             }
         }
         else {
-            Log.d("ActivityResult", "something wrong")
+            Log.d("ActivityResult", "1. not select new image 2. failed to load new image")
         }
     }
 

@@ -2,8 +2,10 @@ package com.example.withpresso
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,7 +21,6 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
-//    private lateinit var userInfo: UserInfo
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,12 +29,6 @@ class MainActivity : AppCompatActivity() {
 
         /* init */
         pref = getSharedPreferences("user_info", 0)
-//        userInfo = UserInfo(
-//            pref.getString("email", ""),
-//            pref.getString("password", ""),
-//            pref.getString("profile", ""),
-//            pref.getString("nickname", "")
-//        )
 
         val dataList = arrayListOf(
             Data(R.drawable.melancholic_org, "melancholic-1"),
@@ -48,9 +43,6 @@ class MainActivity : AppCompatActivity() {
 
         cafes_recycle.layoutManager = GridLayoutManager(this, 2)
         cafes_recycle.adapter = CafeRecyclerViewAdapter(this, dataList)
-
-//        Log.d("pref: profile", pref.getString("profile", "")!!)
-//        my_page_button.setImageBitmap(stringToBitmap(pref.getString("profile", "")!!))
 
         /* setOnClickListener */
         my_page_button.setOnClickListener {
@@ -71,14 +63,31 @@ class MainActivity : AppCompatActivity() {
 
         /* Glide로 image view에 이미지 그리기 */
         val uri = pref.getString("profile_uri", "")
-        val sig = pref.getString("profile_sig", "")
+        val sig = pref.getString("profile_sig", "0")
         /* 나중에 image loading 실패하면 서버에 요청에서 데이터 받아오기 */
-        Glide.with(this)
-            .asBitmap()
-            .load(uri)
-            .signature(ObjectKey(sig!!))
-            .centerCrop()
-            .into(my_page_button)
+        if(sig == "0") {
+            val defaultUri = Uri.parse(
+                "android.resource://${R::class.java.`package`}/${this.resources.getIdentifier(
+                    "default_profile",
+                    "drawable",
+                    this.packageName
+                )}"
+            )
+            Glide.with(this)
+                .asBitmap()
+                .load(defaultUri)
+                .signature(ObjectKey(sig))
+                .into(my_page_button)
+        }
+        else {
+            /* try-catch로 caching 실패했을 때 서버에서 이미지 불러오는 거 처리하기 */
+            Glide.with(this)
+                .asBitmap()
+                .load(uri)
+                .signature(ObjectKey(sig!!))
+                .centerCrop()
+                .into(my_page_button)
+        }
     }
 
     /* string -> byte array -> bitmap으로 변환 */

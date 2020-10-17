@@ -18,6 +18,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import com.bumptech.glide.Glide
+import com.bumptech.glide.signature.ObjectKey
 import com.example.withpresso.R
 import kotlinx.android.synthetic.main.activity_my_page.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
@@ -221,20 +223,20 @@ class SignUpActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if(requestCode == OPEN_GALLERY && resultCode == Activity.RESULT_OK) {
-            var currentImageUri : Uri? = data?.data
+            val currentImageUri : Uri? = data?.data
 
             try {
-                var bitmap = MediaStore.Images.Media.getBitmap(contentResolver, currentImageUri)
-                sign_up_profile_image.setImageBitmap(bitmap)
-
-                val bitmapString = bitmapToString(bitmap)
-                Log.d("bitmap to string", bitmapString)
+                val signature = System.currentTimeMillis().toString()
+                Glide.with(this)
+                    .asBitmap()
+                    .load(currentImageUri)
+                    .signature(ObjectKey(signature))
+                    .into(sign_up_profile_image)
 
                 val edit = pref.edit()
-                edit.putString("profile", bitmapString)
+                edit.putString("profile_uri", currentImageUri.toString())
+                edit.putString("profile_sig", signature)
                 edit.commit()
-
-                Log.d("save", "success")
             }
             catch (e: Exception) {
                 e.printStackTrace()
