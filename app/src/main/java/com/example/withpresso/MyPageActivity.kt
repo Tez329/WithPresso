@@ -19,6 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import kotlinx.android.synthetic.main.activity_my_page.*
+import okhttp3.internal.cache.CacheStrategy
 import java.io.ByteArrayOutputStream
 import java.util.*
 
@@ -145,6 +146,8 @@ class MyPageActivity : AppCompatActivity() {
                     .asBitmap()
                     .load(currentImageUri)
                     .signature(ObjectKey(signature))
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(my_page_profile_image)
 
                 val edit = pref.edit()

@@ -10,7 +10,7 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-
+    <!-- title -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -30,9 +30,9 @@
             android:id="@+id/review_title_text"
             style="@style/sign_in_title_style"
             android:text="@string/review" />
-
     </FrameLayout>
 
+    <!-- review -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -42,8 +42,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- cafe cleanliness -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/review_clean_card"
+                android:id="@+id/review_cafe_clean_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
@@ -57,32 +58,42 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/review_clean_text"
+                        android:id="@+id/review_cafe_clean_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/basic"
                         android:padding="4dp"
-                        android:text="@string/cleanliness"
+                        android:text="@string/cafe_cleanliness"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <RadioGroup
-                        android:id="@+id/review_clean_group"
+                        android:id="@+id/review_cafe_clean_group"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
                         <RadioButton
-                            android:id="@+id/review_clean_good_radio"
+                            android:id="@+id/review_cafe_very_dirty_radio"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:fontFamily="@font/basic"
                             android:padding="4dp"
-                            android:text="CLEAN"
+                            android:text="VERY DIRTY"
                             android:textSize="16sp" />
 
                         <RadioButton
-                            android:id="@+id/review_clean_soso_radio"
+                            android:id="@+id/review_cafe_dirty_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="DIRTY"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_cafe_soso_radio"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -92,22 +103,199 @@
                             android:textSize="16sp" />
 
                         <RadioButton
-                            android:id="@+id/review_clean_bad_radio"
+                            android:id="@+id/review_cafe_clean_radio"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:fontFamily="@font/basic"
                             android:padding="4dp"
-                            android:text="BAD"
+                            android:text="CLEAN"
                             android:textSize="16sp" />
 
+                        <RadioButton
+                            android:id="@+id/review_cafe_very_clean_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="VERY CLEAN"
+                            android:textSize="16sp" />
+                    </RadioGroup>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- restroom cleanliness -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/review_rest_clean_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/review_rest_clean_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/basic"
+                        android:padding="4dp"
+                        android:text="@string/restroom_cleanliness"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/review_rest_clean_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <RadioButton
+                            android:id="@+id/review_rest_very_dirty_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="VERY DIRTY"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_rest_dirty_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="DIRTY"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_rest_soso_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="NOT BAD"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_rest_clean_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="CLEAN"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_rest_very_clean_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="VERY CLEAN"
+                            android:textSize="16sp" />
                     </RadioGroup>
                 </LinearLayout>
 
 
             </androidx.cardview.widget.CardView>
 
+            <!-- staff kindness -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/review_staff_kind_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/review_staff_kindness_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/basic"
+                        android:padding="4dp"
+                        android:text="STAFF'S KINDNESS"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/review_staff_kind_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <RadioButton
+                            android:id="@+id/review_staff_very_unkind_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="VERY UNKIND"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_staff_unkind_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="UNKIND"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_staff_soso_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="NOT BAD"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_staff_kind_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="KIND"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_staff_very_kind_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="VERY KIND"
+                            android:textSize="16sp" />
+                    </RadioGroup>
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- atmosphere -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/review_atmo_card"
                 android:layout_width="match_parent"
@@ -128,7 +316,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/basic"
                         android:padding="4dp"
-                        android:text="ATMOSPHERE"
+                        android:text="NOISE"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -138,7 +326,17 @@
                         android:layout_height="match_parent">
 
                         <RadioButton
-                            android:id="@+id/review_atmo_good_radio"
+                            android:id="@+id/review_atmo_very_quiet_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="VERY QUIET"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_atmo_quiet_radio"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -154,11 +352,21 @@
                             android:layout_marginStart="8dp"
                             android:fontFamily="@font/basic"
                             android:padding="4dp"
-                            android:text="NOT BAD"
+                            android:text="PROPER"
                             android:textSize="16sp" />
 
                         <RadioButton
-                            android:id="@+id/review_atmo_bad_radio"
+                            android:id="@+id/review_atmo_little_noisy_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="LITTLE NOISY"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_atmo_noisy_radio"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -171,81 +379,90 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/review_staff_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="4dp"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:padding="4dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/review_staff_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/basic"
-                        android:layout_margin="4dp"
-                        android:padding="4dp"
-                        android:text="직원이 친절해요"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_vertical"/>
-
-                    <CheckBox
-                        android:id="@+id/review_staff_check"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:layout_gravity="center_vertical" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-
+            <!-- study well -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/review_studied_well_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="4dp"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:padding="4dp">
+                android:focusableInTouchMode="true">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_margin="4dp"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/review_studied_well_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/basic"
-                        android:layout_margin="4dp"
                         android:padding="4dp"
-                        android:text="공부가 잘 됐어요"
+                        android:text="STUDIED WELL"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_vertical"/>
+                        android:textStyle="bold" />
 
-                    <CheckBox
-                        android:id="@+id/review_studied_well_check"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:layout_gravity="center_vertical" />
+                    <RadioGroup
+                        android:id="@+id/review_studied_well_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
+                        <RadioButton
+                            android:id="@+id/review_study_very_bad_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="INCONCENTRATE"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_study_bad_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="NOT WELL"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_study_soso_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="NOT BAD"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_study_well_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="WELL"
+                            android:textSize="16sp" />
+
+                        <RadioButton
+                            android:id="@+id/review_study_very_well_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/basic"
+                            android:padding="4dp"
+                            android:text="VERY WELL"
+                            android:textSize="16sp" />
+
+                    </RadioGroup>
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
+
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"

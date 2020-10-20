@@ -25,9 +25,10 @@
     <string name="my_page">MY PAGE</string>
     <string name="review">REVIEW</string>
     <string name="logout">LOGOUT</string>
-    <string name="cleanliness">CLEANLINESS</string>
+    <string name="cafe_cleanliness">CAFE CLEANLINESS</string>
     <string name="submit">SUBMIT</string>
     <string name="phone_number_except">PHONE NUMBER EXCEPT \'-\'</string>
     <string name="wide_table">1. WIDE TABLE</string>
     <string name="survey_phrase">Which cafe do you prefer?\nPlease choose three.</string>
+    <string name="restroom_cleanliness">RESTROOM CLEANLINESS</string>
 </resources>
