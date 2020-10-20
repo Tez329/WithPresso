@@ -18,16 +18,22 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
-import com.example.withpresso.R
-import kotlinx.android.synthetic.main.activity_my_page.*
+import com.example.withpresso.service.EmailDupConfirmService
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.ByteArrayOutputStream
 import java.util.*
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
+    private lateinit var retrofit: Retrofit
     private val OPEN_GALLERY = 1
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -37,8 +43,12 @@ class SignUpActivity : AppCompatActivity() {
 
         /* init */
         pref = getSharedPreferences("user_info", 0)
+        retrofit = Retrofit.Builder()
+            .baseUrl("http://ec2-3-34-119-217.ap-northeast-2.compute.amazonaws.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-        /* setLinstener*/
+        /* set on event linstener */
         /* sign_up_whole_layout */
         sign_up_whole_layout.setOnClickListener {}
 
@@ -69,6 +79,41 @@ class SignUpActivity : AppCompatActivity() {
                     sign_up_email_layout.error = "empty"
             }
         })
+
+        /* sign_up_email_dup_check_button */
+        sign_up_email_dup_check_button.setOnClickListener {
+            val email = sign_up_email_edit.text.toString()
+            if(email.isEmpty())
+                Toast.makeText(this, "enter the email", Toast.LENGTH_SHORT).show()
+            else {
+                val emailDupConfirmService = retrofit.create(EmailDupConfirmService::class.java)
+                emailDupConfirmService.requestIdDupConfirm(email).enqueue(object : Callback<String> {
+                    /* 통신이 성공하면 출력. 결과값이 맞는 지는 알아서 판단해줘야 함. */
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        val idDupCheck = response.body()
+                        val dialog = AlertDialog.Builder(this@SignUpActivity)
+
+                        if (idDupCheck == "0") {
+                            dialog.setTitle("success")
+                            dialog.setMessage("${idDupCheck}: usable email.")
+                            dialog.show()
+                        } else {
+                            dialog.setTitle("success")
+                            dialog.setMessage("${idDupCheck}: unusable email.")
+                            dialog.show()
+                        }
+                    }
+                    /* 통신이 실패하면 출력 */
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        Log.d("id duplicate check", t.message!!)
+                        val dialog = AlertDialog.Builder(this@SignUpActivity)
+                        dialog.setTitle("error")
+                        dialog.setMessage("failed")
+                        dialog.show()
+                    }
+                })
+            }
+        }
 
         /* sign_up_password_edit */
         sign_up_password_edit.setOnClickListener { showKeypad(it) }
@@ -119,9 +164,7 @@ class SignUpActivity : AppCompatActivity() {
         })
 
         /* sign_up_phone_edit */
-        sign_up_phone_edit.setOnClickListener {
-            showKeypad(it)
-        }
+        sign_up_phone_edit.setOnClickListener { showKeypad(it) }
         sign_up_phone_edit.setOnFocusChangeListener { v, hasFocus ->
             if(!hasFocus)
                 hideKeypad(v)
@@ -143,9 +186,7 @@ class SignUpActivity : AppCompatActivity() {
         })
 
         /* sign_up_nickname_edit */
-        sign_up_nickname_edit.setOnClickListener {
-            showKeypad(it)
-        }
+        sign_up_nickname_edit.setOnClickListener { showKeypad(it) }
         sign_up_nickname_edit.setOnFocusChangeListener { v, hasFocus ->
             if(!hasFocus)
                 hideKeypad(v)

@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         cafes_recycle.layoutManager = GridLayoutManager(this, 2)
         cafes_recycle.adapter = CafeRecyclerViewAdapter(this, dataList)
 
-        /* setOnClickListener */
+        /* set event listener */
         my_page_button.setOnClickListener {
             if(pref.getString("email", "") == "" || pref.getString("password", "") == "") {
                 val intent = Intent(this, LogInActivity::class.java)
