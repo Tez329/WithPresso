@@ -6,8 +6,8 @@
     <dimen name="edit_size">24sp</dimen>
     <dimen name="edit_margin">8dp</dimen>
     <dimen name="edit_padding">8dp</dimen>
-    <dimen name="button_marginStart">16dp</dimen>
-    <dimen name="button_marginEnd">16dp</dimen>
+    <dimen name="button_marginStart">10dp</dimen>
+    <dimen name="button_marginEnd">10dp</dimen>
     <dimen name="button_padding">16dp</dimen>
 
 </resources>

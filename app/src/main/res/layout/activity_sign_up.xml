@@ -30,30 +30,21 @@
             android:text="@string/sign_up_title" />
 
     </FrameLayout>
-        <ImageView
-            android:id="@+id/sign_up_profile_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/default_profile" />
 
-        <LinearLayout
+    <!-- input data -->
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:weightSum="20">
+            android:layout_marginTop="100dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/sign_up_email_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:errorEnabled="true"
-                android:layout_weight="">
+                app:errorEnabled="true">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/sign_up_email_edit"
                     android:layout_width="match_parent"
@@ -69,6 +60,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/confirm"
+                android:textSize="12sp"
+                android:background="#00ff0000"
+                android:layout_gravity="center_vertical"
                 />
         </LinearLayout>
 
@@ -76,8 +70,8 @@
             android:id="@+id/sign_up_pw_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             app:counterEnabled="true"
             app:counterMaxLength="20"
             app:errorEnabled="true"
@@ -98,8 +92,8 @@
             android:id="@+id/sign_up_pw_check_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             app:counterEnabled="true"
             app:counterMaxLength="20"
             app:errorEnabled="true"
@@ -120,8 +114,8 @@
             android:id="@+id/sign_up_phone_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -138,8 +132,8 @@
             android:id="@+id/sign_up_nickname_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -160,7 +154,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/confirm" />
+            android:text="@string/sign_up" />
 
 
 </LinearLayout>

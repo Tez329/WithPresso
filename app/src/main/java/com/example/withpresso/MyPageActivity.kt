@@ -1,8 +1,11 @@
 package com.example.withpresso
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -12,37 +15,56 @@ import android.provider.MediaStore
 import android.transition.Transition
 import android.util.Log
 import android.util.LruCache
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
+import com.example.withpresso.service.ProfileReplaceService
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_my_page.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.internal.cache.CacheStrategy
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.*
 
 
 class MyPageActivity : AppCompatActivity() {
-    private lateinit var pref: SharedPreferences
-    private lateinit var memCache: LruCache<String, Bitmap>
-
+    private val RECORD_REQUEST_CODE = 1000
+    private val TAG = "PermissionDemo"
     private val OPEN_GALLERY = 1
+    private val GALLERY_ACCESS_REQUEST_CODE = 1001
+
+    private lateinit var pref: SharedPreferences
+    private lateinit var retrofit: Retrofit
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_page)
 
-
         /* init */
         pref = getSharedPreferences("user_info", 0)
+        retrofit = Retrofit.Builder()
+            .baseUrl("http://ec2-3-34-119-217.ap-northeast-2.compute.amazonaws.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-        val bitmapString = pref.getString("profile", "")
-        val bitmap = stringToBitmap(bitmapString!!)
-
-        my_page_profile_image.setImageBitmap(bitmap)
         my_page_nickname_text.text = pref.getString("nickname", "")
         my_page_email_text.text = pref.getString("email", "")
 
@@ -51,7 +73,7 @@ class MyPageActivity : AppCompatActivity() {
 
         my_page_back_button.setOnClickListener { onBackPressed() }
 
-        my_page_profile_image.setOnClickListener { openGallery() }
+        my_page_profile_image.setOnClickListener { permissionCheckAndOpenGallery() }
 
         my_page_coupon_layout.setOnClickListener {
             val intent = Intent(this, CouponActivity::class.java)
@@ -64,21 +86,8 @@ class MyPageActivity : AppCompatActivity() {
         }
 
         my_page_logout_layout.setOnClickListener {
-//            val defaultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.default_profile)
-//            val bitmapString = bitmapToString(defaultBitmap)
-//            val edit = pref.edit()
-//            edit.clear()
-//            edit.putString("profile", bitmapString)
-//            edit.commit()
-
             val edit = pref.edit()
-            edit.putString("email", "")
-            edit.putString("password", "")
-            edit.putString("phone", "")
-            edit.putString("nickname", "")
-            edit.putString("profile_uri", "")
-            edit.putString("profile_sig", "0")
-            edit.commit()
+            edit.clear().commit()
 
             onBackPressed()
         }
@@ -87,31 +96,33 @@ class MyPageActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        val uri = pref.getString("profile_uri", "")
-        val signature = pref.getString("profile_sig", "")
+        /*
+        * pref에 url이 있으면 glide를 이용해서 그리기
+        *               없으면 기본 이미지 그리기
+        * */
+        if(pref.contains("profile_url")) {
+            val profileUrl = pref.getString("profile_url", "")
 
-        Glide.with(this)
-            .asBitmap()
-            .load(uri)
-            .signature(ObjectKey(signature!!))
-            .centerCrop()
-            .into(my_page_profile_image)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        val email = pref.getString("email", "")
-        val password = pref.getString("password", "")
-        val profile = pref.getString("profile", "")
-        val nickname = pref.getString("nickname", "")
-
-        val edit = pref.edit()
-        edit.putString("email", email)
-        edit.putString("password", password)
-        edit.putString("profile", profile)
-        edit.putString("nickname", nickname)
-        edit.commit()
+            Glide.with(this)
+                .load(profileUrl!!)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(my_page_profile_image)
+        }
+        else {
+            val defaultUri = Uri.parse(
+                "android.resource://${R::class.java.`package`}/${this.resources.getIdentifier(
+                    "default_profile",
+                    "drawable",
+                    this.packageName
+                )}"
+            )
+            Glide.with(this)
+                .load(defaultUri)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(my_page_profile_image)
+        }
     }
 
     /* 갤러리 열어서 사진 선택 */
@@ -120,53 +131,69 @@ class MyPageActivity : AppCompatActivity() {
         startActivityForResult(intent, OPEN_GALLERY)
     }
 
-    /* 선택한 사진을 bitmap으로 반환해서 profile 그리기. + string으로 변환해서 sharedpreferences에 저장*/
+    /*
+    * 1. glide: profile 선택한 사진으로 다시 그려주기
+    * 2. retrofit: 이미지 서버로 보내고 url 받아오기
+    * 3. pref: {"profile_url": '받아온 url'} 저장
+    * */
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if(requestCode == OPEN_GALLERY && resultCode == Activity.RESULT_OK) {
-            val currentImageUri : Uri? = data?.data
-            Log.d("Uri", currentImageUri.toString())
+            val profileUri : Uri? = data?.data
+            Log.d("Uri", profileUri.toString())
 
             try {
-                // var bitmap = MediaStore.Images.Media.getBitmap(contentResolver, currentImageUri)
-                /* uri에서 bitmap추출 후 image view에 그리기 */
-                /*
-                    val parcelFileDescriptor = contentResolver.openFileDescriptor(currentImageUri!!, "r")
-                    val fileDescriptor = parcelFileDescriptor!!.fileDescriptor
-                    val bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
-                    parcelFileDescriptor.close()
-                    my_page_profile_image.setImageBitmap(bitmap)
-                */
-
-                /* Glide를 사용해서 bitmap 추출 + image view에 그리기 */
+                /* Glide를 사용해서 image view 그리기 */
                 val signature = System.currentTimeMillis().toString()
                 Glide.with(this)
-                    .asBitmap()
-                    .load(currentImageUri)
-                    .signature(ObjectKey(signature))
-                    .skipMemoryCache(true)
+                    .load(profileUri)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(my_page_profile_image)
 
-                val edit = pref.edit()
-                edit.putString("profile_uri", currentImageUri.toString())
-                edit.putString("profile_sig", signature)
-                edit.commit()
+                /* 이렇게 교체하고 리턴값으로 새로 저장한 profile의 url 받아오기. url값을 pref에 저장하기 */
+                val profileReplaceService = retrofit.create(ProfileReplaceService::class.java)
+                val absPath = absolutelyPath(profileUri!!)
+                val file = File(absPath)
+                val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                val multipartBody = MultipartBody.Part.createFormData(
+                    "new_profile", file.name, requestBody
+                )
+                profileReplaceService.requestProfileReplacement(multipartBody).enqueue(object : Callback<String> {
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        Log.d("profile image update", "success")
 
+                        /* 반환값을 url로 받아서 pref에 저장하기*/
+                        val profileReplaceCheck = response.body()
+                        val dialog = AlertDialog.Builder(this@MyPageActivity)
+                        dialog.setTitle("통신 성공")
 
-                /*
-                    /* bitmap을 문자열로 encoding */
-                    val bitmapString = bitmapToString(bitmap)
-                    Log.d("bitmap to string", bitmapString)
+                        if(profileReplaceCheck == "1") {
+                            dialog.setMessage("업데이트 성공")
 
-                    /* encoding된 string을 SharedPreferences에 저장 */
-                    val edit = pref.edit()
-                    edit.putString("profile", bitmapString)
-                    edit.commit()
-                    Log.d("save", "success")
-                */
+//                            val edit = pref.edit()
+//                            edit.putString("profile_url", profileReplaceCheck)
+//                            edit.commit()
+                        }
+                        else
+                            dialog.setMessage("업데이트 실패")
+
+                        dialog.show()
+                    }
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        Log.d("profile update fail", t.message!!)
+                        val dialog = AlertDialog.Builder(this@MyPageActivity)
+                        dialog.setTitle("통신 실패")
+                        dialog.setMessage("Error occurred.")
+                        dialog.show()
+                    }
+                })
+
+//                val edit = pref.edit()
+//                edit.putString("profile_uri", currentImageUri.toString())
+//                edit.putString("profile_sig", signature)
+//                edit.commit()
             }
             catch (e: Exception) {
                 e.printStackTrace()
@@ -177,30 +204,67 @@ class MyPageActivity : AppCompatActivity() {
         }
     }
 
-    /* bitmap -> byte array -> string으로 변환 */
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun bitmapToString(bitmap: Bitmap): String {
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
+    /* 전달된 file uri를 절대 경로로 바꿔주는 함수 */
+    private fun absolutelyPath(path: Uri): String {
+        var proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
+        var c: Cursor = contentResolver.query(path, proj, null, null, null)!!
+        var index = c.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        c.moveToFirst()
 
-        val byteArray = baos.toByteArray()
-        val byteString = Base64.getEncoder().encodeToString(byteArray)
+        var result = c.getString(index)
 
-        return byteString
+        return result
     }
 
-    /* string -> byte array -> bitmap으로 변환 */
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun stringToBitmap(string: String): Bitmap? {
-        try {
-            val byteArray = Base64.getDecoder().decode(string)
-            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    /* permission */
+    private fun permissionCheckAndOpenGallery() {
+        val permission = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.READ_EXTERNAL_STORAGE
+        )
 
-            return bitmap
+        /* 이미 갤러리 접근을 허용 했음 */
+        if(permission == PermissionChecker.PERMISSION_GRANTED){
+            openGallery()
         }
-        catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            return null
+        /* 갤러리 접근이 허용된 적 없음 */
+        else {
+            val isAccessDenied = ActivityCompat.shouldShowRequestPermissionRationale(
+                this, Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+
+            /* 최초로 갤러리에 접근 시도 */
+            if(!isAccessDenied) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    GALLERY_ACCESS_REQUEST_CODE
+                )
+            }
+            /* 갤러리 접근 권한 제한됨 */
+            else {
+                val dialog = AlertDialog.Builder(this)
+                dialog.setTitle("갤러리 접근 권한 제한됨")
+                dialog.setMessage("  갤러리 접근을 허용해 주세요.\n\n" +
+                        "  app info -> Permissions -> storage")
+                dialog.show()
+            }
         }
     }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode) {
+            /* 갤러리에 접근이 허용되면 갤러리 열기 */
+            GALLERY_ACCESS_REQUEST_CODE -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
+                    openGallery()
+                }
+            }
+        }
+
+        return
+    }
+
 }

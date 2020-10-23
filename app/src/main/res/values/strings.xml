@@ -31,4 +31,7 @@
     <string name="wide_table">1. WIDE TABLE</string>
     <string name="survey_phrase">Which cafe do you prefer?\nPlease choose three.</string>
     <string name="restroom_cleanliness">RESTROOM CLEANLINESS</string>
+
+    <!--kakao talk key-->
+    <string name="kakao_app_key">0fcf5557f3dcc4f19eb41a167e17560e</string>
 </resources>

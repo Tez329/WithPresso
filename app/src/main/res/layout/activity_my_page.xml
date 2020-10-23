@@ -41,7 +41,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/melancholic_head" />
+        android:src="@drawable/default_profile" />
 
     <TextView
         android:id="@+id/my_page_nickname_text"

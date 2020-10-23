@@ -22,11 +22,9 @@ import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
 import com.example.withpresso.service.EmailDupConfirmService
+import com.example.withpresso.service.SignUpService
 import kotlinx.android.synthetic.main.activity_sign_up.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.ByteArrayOutputStream
 import java.util.*
@@ -35,6 +33,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var retrofit: Retrofit
     private val OPEN_GALLERY = 1
+    private var emailDupChecked = false
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,9 +53,6 @@ class SignUpActivity : AppCompatActivity() {
 
         /* sign_up_back_button */
         sign_up_back_button.setOnClickListener { onBackPressed() }
-
-        /* sign_up_profile_image */
-        sign_up_profile_image.setOnClickListener { openGallery() }
 
         /* sign_up_email_edit */
         sign_up_email_edit.setOnClickListener { showKeypad(it) }
@@ -94,6 +90,7 @@ class SignUpActivity : AppCompatActivity() {
                         val dialog = AlertDialog.Builder(this@SignUpActivity)
 
                         if (idDupCheck == "0") {
+                            emailDupChecked = true
                             dialog.setTitle("success")
                             dialog.setMessage("${idDupCheck}: usable email.")
                             dialog.show()
@@ -213,6 +210,10 @@ class SignUpActivity : AppCompatActivity() {
                 sign_up_email_layout.error = "empty"
                 Toast.makeText(this, "enter the email address", Toast.LENGTH_SHORT).show()
             }
+            else if (!emailDupChecked) {
+                sign_up_email_layout.error = "check email"
+                Toast.makeText(this, "사용 가능한 아이디인지 확인해주세요.", Toast.LENGTH_SHORT).show()
+            }
             else if (sign_up_password_edit.text.toString().isEmpty()){
                 sign_up_pw_layout.error = "empty"
                 Toast.makeText(this, "enter the password address", Toast.LENGTH_SHORT).show()
@@ -226,17 +227,49 @@ class SignUpActivity : AppCompatActivity() {
                 Toast.makeText(this, "enter the nickname address", Toast.LENGTH_SHORT).show()
             }
             else {
-                val edit = pref.edit()
-                edit.putString("email", sign_up_email_edit.text.toString())
-                edit.putString("password", sign_up_password_edit.text.toString())
-                edit.putString("phone", sign_up_phone_edit.text.toString())
-                edit.putString("nickname", sign_up_nickname_edit.text.toString())
-                edit.commit()
+                val signUpService = retrofit.create(SignUpService::class.java)
+                val email = sign_up_email_edit.text.toString()
+                val password = sign_up_password_edit.text.toString()
+                val phone = sign_up_phone_edit.text.toString()
+                val nickname = sign_up_nickname_edit.text.toString()
 
-                val intent = Intent(this, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
+                signUpService.requestSignUp(email, password, nickname, phone).enqueue(object :Callback<String>{
+                    /* 통신 성공 시 실행 */
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        val responseBody = response.body()
+
+                        if(responseBody == "1") {
+                            /* 계정 정보를 pref에 저장 */
+                            val edit = pref.edit()
+                            edit.putString("email", email)
+                            edit.putString("password", password)
+                            edit.putString("nickname", nickname)
+                            edit.apply()
+                            /* 성공 토스트 띄우기 */
+                            Toast.makeText(this@SignUpActivity, "회원 가입 성공", Toast.LENGTH_SHORT).show()
+                            /* MainActivity로 이동 */
+                            val intent = Intent(this@SignUpActivity, MainActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                        }
+                        else {
+                            val dialog = AlertDialog.Builder(this@SignUpActivity)
+                            dialog.setTitle("Sign up")
+                            dialog.setMessage("failed")
+                            dialog.show()
+                        }
+                    }
+                    /* 통신 실패 시 실행 */
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        Log.d("Sign up", t.message!!)
+                        val dialog = AlertDialog.Builder(this@SignUpActivity)
+                        dialog.setTitle("error")
+                        dialog.setMessage("failed")
+                        dialog.show()
+                    }
+
+                })
             }
         }
     }
@@ -250,68 +283,5 @@ class SignUpActivity : AppCompatActivity() {
     private fun hideKeypad(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
-    }
-
-    /* 갤러리 열어서 사진 선택 */
-    private fun openGallery() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-        startActivityForResult(intent, OPEN_GALLERY)
-    }
-
-    /* 선택한 사진을 bitmap으로 반환해서 profile 그리기. + string으로 변환해서 sharedpreferences에 저장*/
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if(requestCode == OPEN_GALLERY && resultCode == Activity.RESULT_OK) {
-            val currentImageUri : Uri? = data?.data
-
-            try {
-                val signature = System.currentTimeMillis().toString()
-                Glide.with(this)
-                    .asBitmap()
-                    .load(currentImageUri)
-                    .signature(ObjectKey(signature))
-                    .into(sign_up_profile_image)
-
-                val edit = pref.edit()
-                edit.putString("profile_uri", currentImageUri.toString())
-                edit.putString("profile_sig", signature)
-                edit.commit()
-            }
-            catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        else {
-            Log.d("ActivityResult", "something wrong")
-        }
-    }
-
-    /* bitmap -> byte array -> string으로 변환 */
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun bitmapToString(bitmap: Bitmap): String {
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
-
-        val byteArray = baos.toByteArray()
-        val byteString = Base64.getEncoder().encodeToString(byteArray)
-
-        return byteString
-    }
-
-    /* string -> byte array -> bitmap으로 변환 */
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun stringToBitmap(string: String): Bitmap? {
-        try {
-            val byteArray = Base64.getDecoder().decode(string)
-            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-
-            return bitmap
-        }
-        catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            return null
-        }
     }
 }
