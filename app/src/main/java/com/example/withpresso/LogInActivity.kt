@@ -117,19 +117,19 @@ class LogInActivity : AppCompatActivity() {
                             onBackPressed()
                         }
                         else {
-                            val dialog = AlertDialog.Builder(this@LogInActivity)
-                            dialog.setTitle("Login")
-                            dialog.setMessage("failed")
-                            dialog.show()
+                            AlertDialog.Builder(this@LogInActivity)
+                                .setTitle("Login")
+                                .setMessage("failed")
+                                .show()
                         }
                     }
                     /* 통신이 실패하면 출력 */
                     override fun onFailure(call: Call<String>, t: Throwable) {
                         Log.d("login", t.message!!)
-                        val dialog = AlertDialog.Builder(this@LogInActivity)
-                        dialog.setTitle("error")
-                        dialog.setMessage("failed")
-                        dialog.show()
+                        AlertDialog.Builder(this@LogInActivity)
+                            .setTitle("error")
+                            .setMessage("failed")
+                            .show()
                     }
                 })
             }

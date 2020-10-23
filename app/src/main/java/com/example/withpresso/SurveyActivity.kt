@@ -97,18 +97,6 @@ class SurveyActivity : AppCompatActivity() {
                             .show()
                     }
                 })
-
-//                val edit = pref.edit()
-//                edit.putInt("survey1", survey[0])
-//                edit.putInt("survey2", survey[1])
-//                edit.putInt("survey3", survey[2])
-//                edit.commit()
-
-
-
-                /* 바로 서버로 넘겨서 추천 목록 정렬해서 보여주기 */
-
-                onBackPressed()
             }
 
         }

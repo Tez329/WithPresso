@@ -12,6 +12,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="72924498-7bb4-4c84-bee7-33b4de3cc355" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/withpresso/LogInActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/withpresso/LogInActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/withpresso/MyPageActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/withpresso/MyPageActivity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/withpresso/SurveyActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/withpresso/SurveyActivity.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

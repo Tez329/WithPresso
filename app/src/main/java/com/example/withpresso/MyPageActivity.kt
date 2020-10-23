@@ -4,18 +4,12 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.transition.Transition
 import android.util.Log
-import android.util.LruCache
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -24,23 +18,17 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.signature.ObjectKey
 import com.example.withpresso.service.ProfileReplaceService
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_my_page.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.internal.cache.CacheStrategy
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.util.*
 
 
 class MyPageActivity : AppCompatActivity() {
@@ -169,13 +157,8 @@ class MyPageActivity : AppCompatActivity() {
                         val dialog = AlertDialog.Builder(this@MyPageActivity)
                         dialog.setTitle("통신 성공")
 
-                        if(profileReplaceCheck == "1") {
+                        if(profileReplaceCheck == "1")
                             dialog.setMessage("업데이트 성공")
-
-//                            val edit = pref.edit()
-//                            edit.putString("profile_url", profileReplaceCheck)
-//                            edit.commit()
-                        }
                         else
                             dialog.setMessage("업데이트 실패")
 
@@ -183,17 +166,12 @@ class MyPageActivity : AppCompatActivity() {
                     }
                     override fun onFailure(call: Call<String>, t: Throwable) {
                         Log.d("profile update fail", t.message!!)
-                        val dialog = AlertDialog.Builder(this@MyPageActivity)
-                        dialog.setTitle("통신 실패")
-                        dialog.setMessage("Error occurred.")
-                        dialog.show()
+                        AlertDialog.Builder(this@MyPageActivity)
+                            .setTitle("통신 실패")
+                            .setMessage("Error occurred.")
+                            .show()
                     }
                 })
-
-//                val edit = pref.edit()
-//                edit.putString("profile_uri", currentImageUri.toString())
-//                edit.putString("profile_sig", signature)
-//                edit.commit()
             }
             catch (e: Exception) {
                 e.printStackTrace()
@@ -207,13 +185,11 @@ class MyPageActivity : AppCompatActivity() {
     /* 전달된 file uri를 절대 경로로 바꿔주는 함수 */
     private fun absolutelyPath(path: Uri): String {
         var proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
-        var c: Cursor = contentResolver.query(path, proj, null, null, null)!!
+        var c = contentResolver.query(path, proj, null, null, null)!!
         var index = c.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
         c.moveToFirst()
 
-        var result = c.getString(index)
-
-        return result
+        return c.getString(index)
     }
 
     /* permission */
