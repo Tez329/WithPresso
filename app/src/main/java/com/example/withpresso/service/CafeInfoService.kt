@@ -3,6 +3,7 @@ package com.example.withpresso.service
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.io.Serializable
 
 data class CafeInfo (
     /* basic */
@@ -34,11 +35,11 @@ data class CafeInfo (
     val kind: Float,
     val noise: Float,
     val study_well: Float
-)
+): Serializable
 
 interface CafeInfoService {
     @GET("/cafe_info/")
     fun requestCafeInfo(
-        @Query("cafe_num") cafe_num: String
+        @Query("cafe_num") cafe_num: Int
     ): Call<CafeInfo>
 }

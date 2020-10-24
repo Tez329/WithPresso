@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity() {
             .build()
 
 
+        /*
+        * onResume()으로 옮기기
+        * */
         val dataList = arrayListOf(
             Data(R.drawable.melancholic_org, "melancholic-1"),
             Data(R.drawable.melancholic_head, "melancholic-2"),
@@ -59,7 +62,10 @@ class MainActivity : AppCompatActivity() {
         cafes_recycle.adapter = CafeRecyclerViewAdapter(this, dataList)
 
 
-        /* 이전에 사용하던 계정 정보가 있다면 자동 로그인 시도 */
+        /*
+        * 자동 로그인
+        * 이전에 사용하던 계정 정보가 있다면 자동 로그인 시도
+        *  */
         if(pref.contains("email") && pref.contains("password")) {
             val email = pref.getString("email", "")
             val password = pref.getString("password", "")
@@ -101,6 +107,8 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
+
+
     }
 
     override fun onResume() {

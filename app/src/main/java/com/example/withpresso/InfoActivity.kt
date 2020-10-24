@@ -5,8 +5,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.withpresso.adapter.ExpandableListAdapter
 import kotlinx.android.synthetic.main.activity_info.*
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class InfoActivity: AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_info)
@@ -61,5 +64,11 @@ class InfoActivity: AppCompatActivity() {
             val intent = Intent(this, ReviewActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        /* */
     }
 }
