@@ -40,6 +40,6 @@ data class CafeInfo (
 interface CafeInfoService {
     @GET("/cafe_info/")
     fun requestCafeInfo(
-        @Query("cafe_num") cafe_num: Int
+        @Query("cafe_num") cafe_num: String
     ): Call<CafeInfo>
 }

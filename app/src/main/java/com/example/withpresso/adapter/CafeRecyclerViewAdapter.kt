@@ -20,7 +20,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-data class Cafe(val uniq_num: Int, val profile: Int, var name: String)
+data class Cafe(val uniq_num: String, val profile: Int, var name: String)
 
 class CafeViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     val uniq_num = itemView.cafe_uniq_num_text
@@ -66,7 +66,7 @@ class CafeRecyclerViewAdapter(
                     else {
                         Toast.makeText(context, selectedCafe.name + "의 정보를 서버로 부터 받아옴.", Toast.LENGTH_SHORT).show()
                         val intent = Intent(context, InfoActivity::class.java)
-                        intent.putExtra("cafe_name", cafeInfo)
+                        intent.putExtra("cafe_info", cafeInfo)
                         context.startActivity(intent)
                     }
                 }
