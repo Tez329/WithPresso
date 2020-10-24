@@ -45,12 +45,12 @@ class InfoActivity: AppCompatActivity() {
                         "넓이(2인석 기준): " + "A4 ${cafeInfo.table_size}장",
                 "의자\n" +
                         "쿠션감: ${cafeInfo.chair_cushion}\n" +
-                        "등받이: ${cafeInfo.chair_back}",
+                        "등받이: ${textConverter("chair_back", cafeInfo.chair_back)}",
                 "음악\n" +
                         "장르: ${cafeInfo.music_genre}",
                 "화장실\n" +
-                        "위치: ${cafeInfo.rest_in}\n" +
-                        "성별 분리: ${cafeInfo.rest_gen_sep}",
+                        "위치: ${textConverter("rest_in", cafeInfo.rest_in)}\n" +
+                        "성별 분리: ${textConverter("rest_gen_sep", cafeInfo.rest_gen_sep)}",
                 "방역여부\n" +
                         "최근 방역 날짜: ${cafeInfo.anco_data}",
                 "방문객 평가" +
@@ -63,11 +63,25 @@ class InfoActivity: AppCompatActivity() {
         )
 
         val expandableListAdapter =
-            ExpandableListAdapter(
-                this,
-                parentList,
-                childrenList
-            )
+            ExpandableListAdapter(this, parentList, childrenList)
         cafe_basic_info.setAdapter(expandableListAdapter)
+    }
+
+    private fun textConverter(category: String, value: Boolean): String? {
+        return when(category) {
+            "chair_back" -> {
+                if (value) "있어요."
+                else "없어요."
+            }
+            "rest_in" -> {
+                if(value) "매장 안에 있어요."
+                else "매장 밖에 있어요."
+            }
+            "rest_gen_sep" -> {
+                if(value) "성별이 구분되어 있어요."
+                else "성별이 구분되어 있지 않아요."
+            }
+            else -> null
+        }
     }
 }
