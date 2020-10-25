@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.GridLayout.HORIZONTAL
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -16,8 +17,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.signature.ObjectKey
+import com.example.withpresso.adapter.Cafe
 import com.example.withpresso.adapter.CafeRecyclerViewAdapter
-import com.example.withpresso.adapter.Data
+import com.example.withpresso.service.Login
 import com.example.withpresso.service.LoginService
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
@@ -30,6 +32,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var retrofit: Retrofit
+    private lateinit var BASE_URL: String
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,8 +41,9 @@ class MainActivity : AppCompatActivity() {
 
         /* init */
         pref = getSharedPreferences("user_info", 0)
+        BASE_URL = "http://ec2-3-34-119-217.ap-northeast-2.compute.amazonaws.com"
         retrofit = Retrofit.Builder()
-            .baseUrl("http://ec2-3-34-119-217.ap-northeast-2.compute.amazonaws.com")
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -48,14 +52,14 @@ class MainActivity : AppCompatActivity() {
         * onResume()으로 옮기기
         * */
         val dataList = arrayListOf(
-            Data(R.drawable.melancholic_org, "melancholic-1"),
-            Data(R.drawable.melancholic_head, "melancholic-2"),
-            Data(R.drawable.melancholic_head, "melancholic-3"),
-            Data(R.drawable.melancholic_org, "melancholic-4"),
-            Data(R.drawable.melancholic_org, "melancholic-5"),
-            Data(R.drawable.melancholic_head, "melancholic-6"),
-            Data(R.drawable.melancholic_head, "melancholic-7"),
-            Data(R.drawable.melancholic_org, "melancholic-8")
+            Cafe(R.drawable.melancholic_org, "melancholic-1"),
+            Cafe(R.drawable.melancholic_head, "melancholic-2"),
+            Cafe(R.drawable.melancholic_head, "melancholic-3"),
+            Cafe(R.drawable.melancholic_org, "melancholic-4"),
+            Cafe(R.drawable.melancholic_org, "melancholic-5"),
+            Cafe(R.drawable.melancholic_head, "melancholic-6"),
+            Cafe(R.drawable.melancholic_head, "melancholic-7"),
+            Cafe(R.drawable.melancholic_org, "melancholic-8")
         )
 
         cafes_recycle.layoutManager = GridLayoutManager(this, 2)
@@ -71,26 +75,29 @@ class MainActivity : AppCompatActivity() {
             val password = pref.getString("password", "")
             val loginService = retrofit.create(LoginService::class.java)
 
-            loginService.requestLogin(email!!, password!!).enqueue(object : Callback<String>{
+            loginService.requestLogin(email!!, password!!).enqueue(object : Callback<Login>{
                 /* 통신 성공 시 실행 */
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    val responseBody = response.body()
+                override fun onResponse(call: Call<Login>, response: Response<Login>) {
+                    val userInfo = response.body()
 
-                    if(responseBody == "1") {
+                    if(userInfo!!.uniq_num != 0) {
                         val edit = pref.edit()
+                        edit.putInt("uniq_num", userInfo.uniq_num)
                         edit.putString("email", email)
                         edit.putString("password", password)
+                        edit.putString("nickname", userInfo.nickname)
+                        edit.putString("profile", userInfo.profile)
                         edit.commit()
 
                         Toast.makeText(this@MainActivity, "자동 로그인 됨", Toast.LENGTH_SHORT).show()
                     }
                 }
                 /* 통신 실패 시 실행 */
-                override fun onFailure(call: Call<String>, t: Throwable) {
+                override fun onFailure(call: Call<Login>, t: Throwable) {
                     Log.d("login", t.message!!)
                     val dialog = AlertDialog.Builder(this@MainActivity)
-                    dialog.setTitle("error")
-                    dialog.setMessage("failed")
+                    dialog.setTitle("자동 로그인 실패")
+                    dialog.setMessage("통신 오류")
                     dialog.show()
                 }
             })
@@ -98,7 +105,7 @@ class MainActivity : AppCompatActivity() {
 
         /* setOnClickListener */
         my_page_button.setOnClickListener {
-            if(pref.contains("email") && pref.contains("email")) {
+            if(pref.contains("email") && pref.contains("password")) {
                 val intent = Intent(this, MyPageActivity::class.java)
                 startActivity(intent)
             }
@@ -118,8 +125,10 @@ class MainActivity : AppCompatActivity() {
         * pref에 url이 있으면 glide를 이용해서 그리기
         *               없으면 기본 이미지 그리기
         * */
-        if(pref.contains("profile_url")) {
-            val profileUrl = pref.getString("profile_url", "")
+        if(pref.getString("profile", "")!!.isNotBlank()) {
+            val userUniqNum = pref.getInt("uniq_num", 0)
+            val profileName = pref.getString("profile", "")
+            val profileUrl = "${BASE_URL}/profile/${userUniqNum}/${profileName}"
 
             Glide.with(this)
                 .load(profileUrl!!)

@@ -12,7 +12,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-//import com.example.withpresso.service.Login
+import com.bumptech.glide.Glide
+import com.example.withpresso.service.Login
 import com.example.withpresso.service.LoginService
 import kotlinx.android.synthetic.main.activity_log_in.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
@@ -101,34 +102,40 @@ class LogInActivity : AppCompatActivity() {
             else {
                 val loginService = retrofit.create(LoginService::class.java)
 
-                loginService.requestLogin(email, password).enqueue(object :Callback<String> {
+                loginService.requestLogin(email, password).enqueue(object :Callback<Login> {
                     /* 통신이 성공했을 때 */
-                    override fun onResponse(call: Call<String>, response: Response<String>) {
-                        val responseBody = response.body()
+                    override fun onResponse(call: Call<Login>, response: Response<Login>) {
+                        val userInfo = response.body()
 
-                        if(responseBody == "1") {
+                        if(userInfo!!.uniq_num != 0) {
                             val edit = preferences.edit()
+                            edit.putInt("uniq_num", userInfo.uniq_num)
                             edit.putString("email", email)
                             edit.putString("password", password)
-                            edit.commit()
+                            edit.putString("nickname", userInfo.nickname)
+                            edit.putString("profile", userInfo.profile)
+                            edit.apply()
 
-                            Toast.makeText(this@LogInActivity, "Login success", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@LogInActivity,
+                                "로그인 성공",
+                                Toast.LENGTH_SHORT).show()
 
                             onBackPressed()
                         }
                         else {
                             AlertDialog.Builder(this@LogInActivity)
-                                .setTitle("Login")
-                                .setMessage("failed")
+                                .setTitle("로그인 실패")
+                                .setMessage("존재하지 않는 계정입니다.")
                                 .show()
                         }
                     }
                     /* 통신이 실패하면 출력 */
-                    override fun onFailure(call: Call<String>, t: Throwable) {
+                    override fun onFailure(call: Call<Login>, t: Throwable) {
                         Log.d("login", t.message!!)
                         AlertDialog.Builder(this@LogInActivity)
-                            .setTitle("error")
-                            .setMessage("failed")
+                            .setTitle("로그인 실패")
+                            .setMessage("통신 오류")
                             .show()
                     }
                 })

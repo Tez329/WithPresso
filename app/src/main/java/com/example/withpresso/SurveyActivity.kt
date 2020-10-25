@@ -69,7 +69,9 @@ class SurveyActivity : AppCompatActivity() {
 
                 /* 설문 결과 서버로 보내기 */
                 val surveyService = retrofit.create(SurveyService::class.java)
-                surveyService.requestSurvey(survey[0], survey[1], survey[2]).enqueue(object :Callback<String> {
+                surveyService.requestSurvey(
+                    pref.getString("email", "")!!, survey[0], survey[1], survey[2]
+                ).enqueue(object :Callback<String> {
                     /* 통신 성공 시 실행 */
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         val surveyResponse = response.body()

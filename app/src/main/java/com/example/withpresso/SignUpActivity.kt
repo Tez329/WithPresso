@@ -255,8 +255,8 @@ class SignUpActivity : AppCompatActivity() {
                         }
                         else {
                             val dialog = AlertDialog.Builder(this@SignUpActivity)
-                            dialog.setTitle("Sign up")
-                            dialog.setMessage("failed")
+                            dialog.setTitle("회원 가입 실패")
+                            dialog.setMessage("회원 가입에 실패했습니다.")
                             dialog.show()
                         }
                     }
@@ -264,8 +264,8 @@ class SignUpActivity : AppCompatActivity() {
                     override fun onFailure(call: Call<String>, t: Throwable) {
                         Log.d("Sign up", t.message!!)
                         val dialog = AlertDialog.Builder(this@SignUpActivity)
-                        dialog.setTitle("error")
-                        dialog.setMessage("failed")
+                        dialog.setTitle("회원 가입 실패")
+                        dialog.setMessage("통신 오류")
                         dialog.show()
                     }
 

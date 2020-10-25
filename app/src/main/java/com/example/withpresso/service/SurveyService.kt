@@ -9,6 +9,7 @@ interface SurveyService {
     @FormUrlEncoded
     @POST("/survey/")
     fun requestSurvey(
+        @Field("input_email")email: String,
         @Field("survey1")survey1:Int,
         @Field("survey2")survey2:Int,
         @Field("survey3")survey3:Int

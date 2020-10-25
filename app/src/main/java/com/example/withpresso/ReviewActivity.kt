@@ -9,10 +9,17 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_review.*
 
-data class Review(var cafe_clean: Int, var rest_clean: Int, var kind: Int, var atmo: Int, var studied_well: Int, var comment: String)
+data class Review(
+    var cafe_clean: Int,
+    var rest_clean: Int,
+    var kind: Int,
+    var atmo: Int,
+    var studied_well: Int,
+    var comment: String
+)
 
 class ReviewActivity : AppCompatActivity() {
-    lateinit var review: Review
+    private lateinit var review: Review
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

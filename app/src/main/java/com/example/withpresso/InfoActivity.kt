@@ -28,37 +28,39 @@ class InfoActivity: AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        val intent = Intent(this, CafeRecyclerViewAdapter::class.java)
+//        val intent = Intent(this, CafeRecyclerViewAdapter::class.java)
         val cafeInfo = intent.getSerializableExtra("cafe_info") as CafeInfo
+
+        info_cafe_name_text.text = cafeInfo.cafe_name
 
         val parentList = arrayListOf("카페 기본 정보", "카페 분위기 정보")
         val childrenList = arrayListOf(
             arrayListOf(
                 "운영시간: ${cafeInfo.cafe_hour}",
-                "매장 위치: ${cafeInfo.addr_city + cafeInfo.addr_district + cafeInfo.addr_street + cafeInfo.addr_detail}",
+                "매장 위치: ${cafeInfo.addr_city} ${cafeInfo.addr_district} ${cafeInfo.addr_street} ${cafeInfo.addr_detail}",
                 "매장 전화번호: ${cafeInfo.cafe_tel}",
                 "메뉴: " + "아직 없음."
             ),
             arrayListOf(
-                "책상\n" +
+                "책상\n" /*+
                         "1인석/2인석/4인석/다인석: ${cafeInfo.table_struct}\n" +
-                        "넓이(2인석 기준): " + "A4 ${cafeInfo.table_size}장",
-                "의자\n" +
+                        "넓이(2인석 기준): " + "A4 ${cafeInfo.table_size}장"*/,
+                "의자\n" /*+
                         "쿠션감: ${cafeInfo.chair_cushion}\n" +
-                        "등받이: ${textConverter("chair_back", cafeInfo.chair_back)}",
-                "음악\n" +
-                        "장르: ${cafeInfo.music_genre}",
-                "화장실\n" +
+                        "등받이: ${textConverter("chair_back", cafeInfo.chair_back)}"*/,
+                "음악\n" /*+
+                        "장르: ${cafeInfo.music_genre}"*/,
+                "화장실\n" /*+
                         "위치: ${textConverter("rest_in", cafeInfo.rest_in)}\n" +
-                        "성별 분리: ${textConverter("rest_gen_sep", cafeInfo.rest_gen_sep)}",
-                "방역여부\n" +
-                        "최근 방역 날짜: ${cafeInfo.anco_data}",
-                "방문객 평가" +
+                        "성별 분리: ${textConverter("rest_gen_sep", cafeInfo.rest_gen_sep)}"*/,
+                "방역여부\n" /*+
+                        "최근 방역 날짜: ${cafeInfo.anco_data}"*/,
+                "방문객 평가" /*+
                         "매장 청결: ${cafeInfo.cafe_clean}점\n" +
                         "화장실 청결: ${cafeInfo.rest_clean}점\n" +
                         "점원 친절도: ${cafeInfo.kind}점\n" +
                         "주변 소리(1점 = 조용 ~ 5점 = 시끄러움): ${cafeInfo.noise}점\n" +
-                        "공부 잘 됨 지수: ${cafeInfo.study_well}점"
+                        "공부 잘 됨 지수: ${cafeInfo.study_well}점"*/
             )
         )
 
