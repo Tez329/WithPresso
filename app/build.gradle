@@ -49,4 +49,7 @@ dependencies {
 
     // Kakaotalk API
     implementation 'com.kakao.sdk:usermgmt:1.16.0'
+
+    // location
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
 }

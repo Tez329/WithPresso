@@ -53,14 +53,14 @@ class LogInActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(s.toString().isEmpty())
-                    log_in_email_layout.error = "empty"
+                    log_in_email_layout.error = "이메일을 입력해주세요"
                 else
                     log_in_email_layout.error = null
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if(s.toString().isEmpty())
-                    log_in_email_layout.error = "empty"
+                    log_in_email_layout.error = "이메일을 입력해주세요"
             }
         })
 
@@ -74,14 +74,14 @@ class LogInActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(s.toString().isEmpty())
-                    log_in_password_layout .error = "empty"
+                    log_in_password_layout .error = "비밀번호를 입력해주세요"
                 else
                     log_in_password_layout.error = null
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if(s.toString().isEmpty())
-                    log_in_password_layout.error = "empty"
+                    log_in_password_layout.error = "비밀번호를 입력해주세요"
             }
         })
 
@@ -92,12 +92,12 @@ class LogInActivity : AppCompatActivity() {
             val password = log_in_password_edit.text.toString()
 
             if(email.isEmpty()) {
-                log_in_email_layout.error = "empty"
-                Toast.makeText(this, "이메일을 입력하세요.", Toast.LENGTH_SHORT).show()
+                log_in_email_layout.error = "이메일을 입력해주세요"
+                Toast.makeText(this, "이메일을 입력해주세요", Toast.LENGTH_SHORT).show()
             }
             else if(password.isEmpty()) {
-                log_in_password_layout.error = "empty"
-                Toast.makeText(this, "비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show()
+                log_in_password_layout.error = "비밀번호를 입력해주세요"
+                Toast.makeText(this, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
             }
             else {
                 val loginService = retrofit.create(LoginService::class.java)

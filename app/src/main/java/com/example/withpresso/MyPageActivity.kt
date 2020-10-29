@@ -94,14 +94,10 @@ class MyPageActivity : AppCompatActivity() {
         * pref에 url이 있으면 glide를 이용해서 그리기
         *               없으면 기본 이미지 그리기
         * */
-        var profileUrl: String? = null
 
-        if(pref.getString("profile", "")!!.isNotBlank()) {
-            val userUniqNum = pref.getInt("uniq_num", 0)
-            val profileName = pref.getString("profile", "")
-            profileUrl = "${BASE_URL}/profile/${userUniqNum}/${profileName}"
-        }
-
+        val userUniqNum = pref.getInt("uniq_num", 0)
+        val profileName = pref.getString("profile", "")
+        val profileUrl = "${BASE_URL}/profiles/${userUniqNum}/${profileName}"
         drawProfile(this@MyPageActivity, profileUrl, my_page_profile_image)
     }
 
@@ -189,28 +185,39 @@ class MyPageActivity : AppCompatActivity() {
                 else {
                     /* 이렇게 교체하고 리턴값으로 새로 저장한 profile의 url 받아오기. url값을 pref에 저장하기 */
                     val profileReplaceService = retrofit.create(ProfileReplaceService::class.java)
+
+                    val uniq_num = pref.getInt("uniq_num", 0).toString()
+                    val multipartBodyUniqNum = MultipartBody.Part.createFormData(
+                        "user_asin", uniq_num
+                    )
                     val absPath = absolutelyPath(profileUri!!)
                     val file = File(absPath)
-                    val requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-                    val multipartBody = MultipartBody.Part.createFormData(
-                        "new_profile", file.name, requestBody
+                    val requestBodyProfile = RequestBody.create(
+                        MediaType.parse("multipart/form-data"), file
                     )
-                    profileReplaceService.requestProfileReplacement(multipartBody).enqueue(object : Callback<String> {
+                    val multipartBodyProfile = MultipartBody.Part.createFormData(
+                        "new_profile", file.name, requestBodyProfile
+                    )
+                    profileReplaceService.requestProfileReplacement(
+                        multipartBodyUniqNum,
+                        multipartBodyProfile
+                    ).enqueue(object : Callback<String> {
+                        /* 통신이 성공했을 때 실행 */
                         override fun onResponse(call: Call<String>, response: Response<String>) {
                             val newProfileUpdataResult = response.body()
 
                             /* 새로운 이미지가 정상적으로 반영됐을 때 실행 */
-                            if(newProfileUpdataResult!!.isNotEmpty()) {
+                            if(newProfileUpdataResult!! == "1") {
                                 /* pref에 이미지 이름 저장하기 */
                                 val fileName = file.name
                                 val edit = pref.edit()
                                 edit.putString("profile", fileName)
-                                edit.apply()
+                                edit.commit()
 
                                 /* Glide를 사용해서 image view 그리기 */
                                 val userUniqNum = pref.getInt("uniq_num", 0)
                                 val profileName = pref.getString("profile", "")
-                                val profileUrl = "${BASE_URL}/profile/${userUniqNum}/${profileName}"
+                                val profileUrl = "${BASE_URL}/profiles/${userUniqNum}/${profileName}"
                                 drawProfile(
                                     this@MyPageActivity,
                                     profileUrl,
@@ -220,14 +227,14 @@ class MyPageActivity : AppCompatActivity() {
                                 /* 업데이트 성공 토스트 띄우기 */
                                 Toast.makeText(
                                     this@MyPageActivity,
-                                    "프로필 이미지가 정상적으로 업데이트 됐습니다.",
+                                    "프로필 이미지가 정상적으로 업데이트 됐습니다",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
                             else {
                                 AlertDialog.Builder(this@MyPageActivity)
                                     .setTitle("프로필 이미지 업데이트 실패")
-                                    .setMessage("변경된 이미지가 반영되지 않았습니다.")
+                                    .setMessage("변경된 이미지가 반영되지 않았습니다")
                                     .show()
                             }
                         }
@@ -262,15 +269,8 @@ class MyPageActivity : AppCompatActivity() {
 
     private fun drawProfile(context: Context, profileUri: String?, des: ImageView) {
         if(profileUri.isNullOrBlank()) {
-            val defaultUri = Uri.parse(
-                "android.resource://${R::class.java.`package`}/${this.resources.getIdentifier(
-                    "default_profile",
-                    "drawable",
-                    this.packageName
-                )}"
-            )
             Glide.with(this)
-                .load(defaultUri)
+                .load(R.drawable.default_profile)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(des)
@@ -278,6 +278,8 @@ class MyPageActivity : AppCompatActivity() {
         else {
             Glide.with(context)
                 .load(profileUri)
+                .error(R.drawable.default_profile)
+                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(des)
         }

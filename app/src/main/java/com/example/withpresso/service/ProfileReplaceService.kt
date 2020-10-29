@@ -10,6 +10,7 @@ interface ProfileReplaceService {
     @Multipart
     @POST("/profile/")
     fun requestProfileReplacement(
+        @Part uniq_num: MultipartBody.Part,
         @Part file: MultipartBody.Part
     ): Call<String>
 }

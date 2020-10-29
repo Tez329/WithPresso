@@ -65,22 +65,24 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(s.toString().isEmpty())
-                    sign_up_email_layout.error = "empty"
+                    sign_up_email_layout.error = "이메일을 입력해주세요"
                 else
                     sign_up_email_layout.error = null
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if(s.toString().isEmpty())
-                    sign_up_email_layout.error = "empty"
+                    sign_up_email_layout.error = "이메일을 입력해주세요"
             }
         })
 
         /* sign_up_email_dup_check_button */
         sign_up_email_dup_check_button.setOnClickListener {
             val email = sign_up_email_edit.text.toString()
-            if(email.isEmpty())
-                Toast.makeText(this, "enter the email", Toast.LENGTH_SHORT).show()
+            if(email.isEmpty()) {
+                Toast.makeText(this, "이메일을 입력해주세요", Toast.LENGTH_SHORT).show()
+                sign_up_email_layout.error = "이메일을 입력해주세요"
+            }
             else {
                 val emailDupConfirmService = retrofit.create(EmailDupConfirmService::class.java)
                 emailDupConfirmService.requestIdDupConfirm(email).enqueue(object : Callback<String> {
@@ -91,12 +93,16 @@ class SignUpActivity : AppCompatActivity() {
 
                         if (idDupCheck == "0") {
                             emailDupChecked = true
-                            dialog.setTitle("success")
-                            dialog.setMessage("${idDupCheck}: usable email.")
-                            dialog.show()
+                            sign_up_email_layout.error = null
+                            Toast.makeText(
+                                this@SignUpActivity,
+                                "사용 가능한 이메일입니다",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else {
-                            dialog.setTitle("success")
-                            dialog.setMessage("${idDupCheck}: unusable email.")
+                            sign_up_email_layout.error = "이미 사용 중인 이메일입니다"
+                            dialog.setTitle("중복 확인 실패")
+                            dialog.setMessage("이미 사용 중인 이메일입니다")
                             dialog.show()
                         }
                     }
@@ -104,8 +110,8 @@ class SignUpActivity : AppCompatActivity() {
                     override fun onFailure(call: Call<String>, t: Throwable) {
                         Log.d("id duplicate check", t.message!!)
                         val dialog = AlertDialog.Builder(this@SignUpActivity)
-                        dialog.setTitle("error")
-                        dialog.setMessage("failed")
+                        dialog.setTitle("중복 확인 실패")
+                        dialog.setMessage("통신 오류")
                         dialog.show()
                     }
                 })
@@ -123,14 +129,14 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(s.toString().isEmpty())
-                    sign_up_pw_layout.error = "empty"
+                    sign_up_pw_layout.error = "비밀번호를 입력해주세요"
                 else
                     sign_up_pw_layout.error = null
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if(s.toString().isEmpty())
-                    sign_up_pw_layout.error = "empty"
+                    sign_up_pw_layout.error = "비밀번호를 입력해주세요"
             }
         })
 
@@ -149,14 +155,14 @@ class SignUpActivity : AppCompatActivity() {
                 if(pw == s.toString())
                     sign_up_pw_check_layout.error = null
                 else
-                    sign_up_pw_check_layout.error = "not the same"
+                    sign_up_pw_check_layout.error = "비밀번호가 다릅니다"
             }
 
             override fun afterTextChanged(s: Editable?) {
                 val pw = sign_up_password_edit.text.toString()
 
                 if(pw != s.toString())
-                    sign_up_pw_check_layout.error = "not the same"
+                    sign_up_pw_check_layout.error = "비밀번호가 다릅니다"
             }
         })
 
@@ -171,14 +177,14 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(s.toString().isEmpty())
-                    sign_up_nickname_layout .error = "empty"
+                    sign_up_nickname_layout .error = "전화번호를 입력해주세요"
                 else
                     sign_up_nickname_layout.error = null
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if(s.toString().isEmpty())
-                    sign_up_nickname_layout.error = "empty"
+                    sign_up_nickname_layout.error = "전화번호를 입력해주세요"
             }
         })
 
@@ -193,38 +199,38 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(s.toString().isEmpty())
-                    sign_up_nickname_layout .error = "empty"
+                    sign_up_nickname_layout .error = "닉네임을 입력해주세요"
                 else
                     sign_up_nickname_layout.error = null
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if(s.toString().isEmpty())
-                    sign_up_nickname_layout.error = "empty"
+                    sign_up_nickname_layout.error = "닉네임을 입력해주세요"
             }
         })
 
         /* sign_up_confirm_button */
         sign_up_confirm_button.setOnClickListener {
             if (sign_up_email_edit.text.toString().isEmpty()) {
-                sign_up_email_layout.error = "empty"
-                Toast.makeText(this, "enter the email address", Toast.LENGTH_SHORT).show()
+                sign_up_email_layout.error = "이메일을 입력해주세요"
+                Toast.makeText(this, "이메일을 입력해주세요", Toast.LENGTH_SHORT).show()
             }
             else if (!emailDupChecked) {
-                sign_up_email_layout.error = "check email"
+                sign_up_email_layout.error = "사용 가능한 아이디인지 확인해주세요"
                 Toast.makeText(this, "사용 가능한 아이디인지 확인해주세요.", Toast.LENGTH_SHORT).show()
             }
             else if (sign_up_password_edit.text.toString().isEmpty()){
-                sign_up_pw_layout.error = "empty"
-                Toast.makeText(this, "enter the password address", Toast.LENGTH_SHORT).show()
+                sign_up_pw_layout.error = "비밀번호를 입력해주세요"
+                Toast.makeText(this, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
             }
             else if(sign_up_password_edit.text.toString() != sign_up_password_check_edit.text.toString()) {
-                sign_up_pw_layout.error = "not the same"
-                Toast.makeText(this, "password does not matched", Toast.LENGTH_SHORT).show()
+                sign_up_pw_layout.error = "비밀번호가 다릅니다"
+                Toast.makeText(this, "비밀번호가 다릅니다", Toast.LENGTH_SHORT).show()
             }
             else if(sign_up_nickname_edit.text.toString().isEmpty()) {
-                sign_up_nickname_layout.error = "empty"
-                Toast.makeText(this, "enter the nickname address", Toast.LENGTH_SHORT).show()
+                sign_up_nickname_layout.error = "닉네임을 입력해주세요"
+                Toast.makeText(this, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show()
             }
             else {
                 val signUpService = retrofit.create(SignUpService::class.java)
@@ -236,17 +242,20 @@ class SignUpActivity : AppCompatActivity() {
                 signUpService.requestSignUp(email, password, nickname, phone).enqueue(object :Callback<String>{
                     /* 통신 성공 시 실행 */
                     override fun onResponse(call: Call<String>, response: Response<String>) {
-                        val responseBody = response.body()
+                        val user_uniq_num = response.body()
 
-                        if(responseBody == "1") {
+                        if(user_uniq_num != "0") {
                             /* 계정 정보를 pref에 저장 */
                             val edit = pref.edit()
+                            edit.putInt("uniq_num", user_uniq_num!!.toInt())
                             edit.putString("email", email)
                             edit.putString("password", password)
                             edit.putString("nickname", nickname)
                             edit.apply()
+
                             /* 성공 토스트 띄우기 */
                             Toast.makeText(this@SignUpActivity, "회원 가입 성공", Toast.LENGTH_SHORT).show()
+
                             /* MainActivity로 이동 */
                             val intent = Intent(this@SignUpActivity, MainActivity::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

@@ -1,5 +1,6 @@
 package com.example.withpresso.service
 
+import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -7,34 +8,34 @@ import java.io.Serializable
 
 data class CafeInfo (
     /* basic */
-    val cafe_asin: Int,
-    val cafe_name: String,
-    val addr_city: String,
-    val addr_district: String,
-    val addr_street: String,
-    val addr_detail: String,
-    val cafe_hour: String,
-    val cafe_tel:String
-    /* table *//*
-    val table_struct: String,
-    val table_size: String,
-    *//* chair *//*
-    val chair_back: Boolean,
-    val chair_cushion: String,
-    *//* music *//*
-    val music: Boolean,
-    val music_genre: String,
-    *//* restroom *//*
-    val rest_in: Boolean,
-    val rest_gen_sep: Boolean,
-    *//* anti-corona *//*
-    val anco_data: String,
-    *//* user review *//*
-    val cafe_clean: Float,
-    val rest_clean: Float,
-    val kind: Float,
-    val noise: Float,
-    val study_well: Float*/
+    @SerializedName("cafe_asin") val cafe_asin: Int,
+    @SerializedName("cafe_name") val cafe_name: String,
+    @SerializedName("addr_city") val addr_city: String,
+    @SerializedName("addr_district") val addr_district: String,
+    @SerializedName("addr_street") val addr_street: String,
+    @SerializedName("addr_detail") val addr_detail: String,
+    @SerializedName("cafe_hour") val cafe_hour: String,
+    @SerializedName("cafe_tel") val cafe_tel:String,
+    /* table*/
+    @SerializedName("table_info") val table_struct: String,
+    @SerializedName("table_size_info") val table_size: String,
+    /* chair */
+    @SerializedName("chair_back_info") val chair_back: Int,
+    @SerializedName("chair_cushion_info") val chair_cushion: String,
+    /* music*/
+//    @SerializedName("cafe_tel") val music: Boolean,
+    @SerializedName("bgm_info") val music_genre: String,
+    /* restroom */
+    @SerializedName("toilet_info") val rest_in: Int,
+    @SerializedName("toilet_gender_info") val rest_gen_sep: Int,
+    /*anti-corona */
+    @SerializedName("sterilization_info") val anco_data: String,
+    /* user review */
+    @SerializedName("user_clean_info") val cafe_clean: Float,
+    @SerializedName("user_toilet_clean_info") val rest_clean: Float,
+    @SerializedName("user_kindness_info") val kind: Float,
+    @SerializedName("user_noisy_info") val noise: Float,
+    @SerializedName("user_good_study_info") val study_well: Float
 ): Serializable
 
 interface CafeInfoService {
