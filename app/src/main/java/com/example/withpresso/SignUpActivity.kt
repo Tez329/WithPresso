@@ -79,9 +79,14 @@ class SignUpActivity : AppCompatActivity() {
         /* sign_up_email_dup_check_button */
         sign_up_email_dup_check_button.setOnClickListener {
             val email = sign_up_email_edit.text.toString()
+
             if(email.isEmpty()) {
                 Toast.makeText(this, "이메일을 입력해주세요", Toast.LENGTH_SHORT).show()
                 sign_up_email_layout.error = "이메일을 입력해주세요"
+            }
+            else if(!emailFormatCheck(email)) {
+                Toast.makeText(this, "이메일 형식이 아닙니다", Toast.LENGTH_SHORT).show()
+                sign_up_email_layout.error = "이메일 형식이 아닙니다"
             }
             else {
                 val emailDupConfirmService = retrofit.create(EmailDupConfirmService::class.java)
@@ -292,5 +297,9 @@ class SignUpActivity : AppCompatActivity() {
     private fun hideKeypad(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun emailFormatCheck(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }

@@ -21,8 +21,8 @@ import androidx.core.content.PermissionChecker
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.example.withpresso.adapter.Cafe
 import com.example.withpresso.adapter.CafeRecyclerViewAdapter
+import com.example.withpresso.service.Cafe
 import com.example.withpresso.service.CafeRecommendService
 import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -92,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         val profileUrl = "${BASE_URL}/profiles/${userUniqNum}/${profileName}"
         drawProfile(this, profileUrl, my_page_button)
 
+        /* 위치 권한이 중간에 막히면 requestLocationUpdate가 null을 반환할 수 있음 */
         val latlong = requestLocationUpdate()
         latlong?.let{
             val lat = latlong[0]
@@ -135,8 +136,10 @@ class MainActivity : AppCompatActivity() {
 
                 }
             )
-        }
-
+        } ?: AlertDialog.Builder(this)
+            .setTitle("위치 정보 가져오기 실패")
+            .setMessage("위치 정보를 가져오지 못했습니다.")
+            .show()
     }
 
     override fun onPause() {
@@ -241,6 +244,7 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    /* 위치를 얻을 수 있으면 위도, 경도를 반환. 위도, 경도를 얻을 수 없으면 null을 반환 */
     private fun requestLocationUpdate(): ArrayList<Double>? {
         /* 위치 정보 권한 검사 */
         if (ActivityCompat.checkSelfPermission(
