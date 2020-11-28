@@ -8,16 +8,16 @@ import java.io.Serializable
 import java.util.ArrayList
 
 data class Cafe(
-    @SerializedName("cafe_uniq") val cafe_uniq_num: Int,
-    @SerializedName("cafe_photo") val photoUrl: String,
+    @SerializedName("cafe_asin") val cafe_uniq_num: Int,
     @SerializedName("cafe_name") var name: String
 ): Serializable
 
 interface CafeRecommendService {
     @GET("/cafe_recommend/")
-    fun requestCafeRecommendList(
+    suspend fun requestCafeRecommendList(
         @Query("lat") latitude: Double,
         @Query("long") longitude: Double,
-        @Query("uniq_num") uniq_num: Int
-    ): Call<ArrayList<Cafe>>
+        @Query("uniq_num") uniq_num: Int,
+        @Query("page_num") page_num: Int
+    ): ArrayList<Cafe>
 }

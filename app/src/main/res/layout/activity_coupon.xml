@@ -23,19 +23,13 @@
         <TextView
             android:id="@+id/coupon_title_text"
             style="@style/sign_in_title_style"
-            android:text="COUPON"/>
+            android:text="쿠폰함"/>
 
     </FrameLayout>
 
-    <ListView
-        android:id="@+id/coupon_list"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/coupon_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        android:padding="8dp"
-        android:dividerHeight="8dp"
-        android:divider="#00ff0000">
-
-    </ListView>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

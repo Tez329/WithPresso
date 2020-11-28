@@ -31,12 +31,14 @@ class SurveyActivity : AppCompatActivity() {
         /* init */
         pref = getSharedPreferences("user_info", 0)
         retrofit = Retrofit.Builder()
-            .baseUrl("http://ec2-3-34-119-217.ap-northeast-2.compute.amazonaws.com")
+            .baseUrl("https://withpresso.gq")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         /* setOnClickListener */
-        survey_back_button.setOnClickListener { onBackPressed() }
+        survey_back_button.setOnClickListener {
+            onBackPressed()
+        }
 
         survey_table_check.setOnCheckedChangeListener { buttonView, isChecked ->
             manageCheckBox(buttonView,isChecked)
@@ -76,6 +78,13 @@ class SurveyActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         val surveyResponse = response.body()
                         if (surveyResponse == "1") {
+                            /* 조사 결과 저장 */
+                            val edit = pref.edit()
+                            edit.putInt("survey1", survey[0])
+                            edit.putInt("survey2", survey[1])
+                            edit.putInt("survey3", survey[2])
+                            edit.apply()
+
                             Toast.makeText(
                                 this@SurveyActivity,
                                 "조사 결과가 정상적으로 반영되었습니다.",

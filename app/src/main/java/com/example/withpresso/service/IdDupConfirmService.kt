@@ -5,7 +5,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
-interface EmailDupConfirmService{
+interface IdDupConfirmService{
     @FormUrlEncoded
     @POST("/id_dup_check/")
     fun requestIdDupConfirm(

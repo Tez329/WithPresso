@@ -1,6 +1,7 @@
 package com.example.withpresso
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -26,17 +27,24 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.withpresso.service.ProfileReplaceService
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_my_page.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
+import java.io.IOException
 
 
+@Suppress("IMPLICIT_CAST_TO_ANY")
 class MyPageActivity : AppCompatActivity() {
     private val OPEN_GALLERY = 1
     private val GALLERY_ACCESS_REQUEST_CODE = 1001
@@ -44,7 +52,7 @@ class MyPageActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var retrofit: Retrofit
     private lateinit var BASE_URL: String
-
+    private lateinit var scope: CoroutineScope
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,11 +61,12 @@ class MyPageActivity : AppCompatActivity() {
 
         /* init */
         pref = getSharedPreferences("user_info", 0)
-        BASE_URL = "http://ec2-3-34-119-217.ap-northeast-2.compute.amazonaws.com"
+        BASE_URL = "https://withpresso.gq"
         retrofit = Retrofit.Builder()
-            .baseUrl("http://ec2-3-34-119-217.ap-northeast-2.compute.amazonaws.com")
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+        scope = CoroutineScope(Dispatchers.IO)
 
         my_page_nickname_text.text = pref.getString("nickname", "")
         my_page_email_text.text = pref.getString("email", "")
@@ -82,8 +91,13 @@ class MyPageActivity : AppCompatActivity() {
         my_page_logout_layout.setOnClickListener {
             val edit = pref.edit()
             edit.clear().commit()
-
-            onBackPressed()
+//            intent.putExtra("activity change", 2)
+//            onBackPressed()
+            val intent = Intent(this@MyPageActivity, MainActivity::class.java)
+            intent.putExtra("activity change", 2)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
         }
     }
 
@@ -98,11 +112,13 @@ class MyPageActivity : AppCompatActivity() {
         val userUniqNum = pref.getInt("uniq_num", 0)
         val profileName = pref.getString("profile", "")
         val profileUrl = "${BASE_URL}/profiles/${userUniqNum}/${profileName}"
-        drawProfile(this@MyPageActivity, profileUrl, my_page_profile_image)
+        scope.launch(Dispatchers.Main) {
+            drawProfile(this@MyPageActivity, profileUrl, my_page_profile_image)
+        }
     }
 
 
-    /* permission */
+    /* 갤러리 접근 권한 */
     private fun permissionCheckAndOpenGallery() {
         val permission = ContextCompat.checkSelfPermission(
             this, Manifest.permission.READ_EXTERNAL_STORAGE
@@ -164,6 +180,7 @@ class MyPageActivity : AppCompatActivity() {
     * 2. glide: profile 이미지 다시 그려주기. 이때 diskCache는 RESOURCE로 설정
     * 3. retrofit: 이미지 서버로 보내기
     * */
+    @SuppressLint("ApplySharedPref")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -202,53 +219,48 @@ class MyPageActivity : AppCompatActivity() {
                         multipartBodyUniqNum,
                         multipartBodyProfile
                     ).enqueue(object : Callback<String> {
-                        /* 통신이 성공했을 때 실행 */
                         override fun onResponse(call: Call<String>, response: Response<String>) {
                             val newProfileUpdataResult = response.body()
+                            newProfileUpdataResult?.let{
+                                /* 새로운 이미지가 정상적으로 반영됐을 때 실행 */
+                                if(newProfileUpdataResult == "1") {
+                                    /* pref에 이미지 이름 저장하기 */
+                                    val fileName = file.name
+                                    val edit = pref.edit()
+                                    edit.putString("profile", fileName)
+                                    edit.commit()
 
-                            /* 새로운 이미지가 정상적으로 반영됐을 때 실행 */
-                            if(newProfileUpdataResult!! == "1") {
-                                /* pref에 이미지 이름 저장하기 */
-                                val fileName = file.name
-                                val edit = pref.edit()
-                                edit.putString("profile", fileName)
-                                edit.commit()
+                                    /* Glide를 사용해서 image view 그리기 */
+                                    val userUniqNum = pref.getInt("uniq_num", 0)
+                                    val profileName = pref.getString("profile", "")
+                                    val profileUrl = "${BASE_URL}/profiles/${userUniqNum}/${profileName}"
+                                    drawProfile(
+                                        this@MyPageActivity,
+                                        profileUrl,
+                                        my_page_profile_image
+                                    )
 
-                                /* Glide를 사용해서 image view 그리기 */
-                                val userUniqNum = pref.getInt("uniq_num", 0)
-                                val profileName = pref.getString("profile", "")
-                                val profileUrl = "${BASE_URL}/profiles/${userUniqNum}/${profileName}"
-                                drawProfile(
-                                    this@MyPageActivity,
-                                    profileUrl,
-                                    my_page_profile_image
-                                )
-
-                                /* 업데이트 성공 토스트 띄우기 */
-                                Toast.makeText(
-                                    this@MyPageActivity,
-                                    "프로필 이미지가 정상적으로 업데이트 됐습니다",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                    toast("프로필 이미지 업데이트 성공")
+                                }
+                                else {
+                                    alert(
+                                        title="프로필 이미지 업데이트 실패",
+                                        message = "변경된 이미지가 반영되지 않았습니다").show()
+                                }
                             }
-                            else {
-                                AlertDialog.Builder(this@MyPageActivity)
-                                    .setTitle("프로필 이미지 업데이트 실패")
-                                    .setMessage("변경된 이미지가 반영되지 않았습니다")
-                                    .show()
-                            }
+                            if (newProfileUpdataResult.isNullOrBlank())
+                                toast("반환값 없음")
                         }
                         override fun onFailure(call: Call<String>, t: Throwable) {
-                            Log.d("profile update fail", t.message!!)
-                            AlertDialog.Builder(this@MyPageActivity)
-                                .setTitle("프로필 이미지 업데이트 실패")
-                                .setMessage("통신 오류")
-                                .show()
+                            alert(
+                                title = "업데이트 실패",
+                                message = "통신 오류"
+                            ).show()
                         }
                     })
                 }
             }
-            catch (e: Exception) {
+            catch (e: IOException) {
                 e.printStackTrace()
             }
         }
@@ -257,7 +269,7 @@ class MyPageActivity : AppCompatActivity() {
         }
     }
 
-    /* 전달된 file uri를 절대 경로로 바꿔주는 함수 */
+        /* 전달된 file uri를 절대 경로로 바꿔주는 함수 */
     private fun absolutelyPath(path: Uri): String {
         var proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
         var c = contentResolver.query(path, proj, null, null, null)!!
@@ -270,7 +282,7 @@ class MyPageActivity : AppCompatActivity() {
     private fun drawProfile(context: Context, profileUri: String?, des: ImageView) {
         if(profileUri.isNullOrBlank()) {
             Glide.with(this)
-                .load(R.drawable.default_profile)
+                .load(R.drawable.ic_baseline_person_24)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(des)
@@ -278,7 +290,7 @@ class MyPageActivity : AppCompatActivity() {
         else {
             Glide.with(context)
                 .load(profileUri)
-                .error(R.drawable.default_profile)
+                .error(R.drawable.ic_baseline_person_24)
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(des)

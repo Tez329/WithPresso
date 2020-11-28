@@ -22,6 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.regex.Pattern
 
 class LogInActivity : AppCompatActivity() {
     private lateinit var preferences: SharedPreferences
@@ -34,7 +35,7 @@ class LogInActivity : AppCompatActivity() {
         /* init */
         preferences = getSharedPreferences("user_info", 0)
         retrofit = Retrofit.Builder()
-            .baseUrl("http://ec2-3-34-119-217.ap-northeast-2.compute.amazonaws.com")
+            .baseUrl("https://withpresso.gq")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -53,14 +54,14 @@ class LogInActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(s.toString().isEmpty())
-                    log_in_email_layout.error = "이메일을 입력해주세요"
+                    log_in_email_layout.error = "아이디를 입력해주세요"
                 else
                     log_in_email_layout.error = null
             }
 
             override fun afterTextChanged(s: Editable?) {
                 if(s.toString().isEmpty())
-                    log_in_email_layout.error = "이메일을 입력해주세요"
+                    log_in_email_layout.error = "아이디를 입력해주세요"
             }
         })
 
@@ -86,14 +87,19 @@ class LogInActivity : AppCompatActivity() {
         })
 
         log_in_button.setOnClickListener {
-            hideKeypad(it)
+            hideKeypad(log_in_email_edit)
+            hideKeypad(log_in_password_edit)
 
             val email = log_in_email_edit.text.toString()
             val password = log_in_password_edit.text.toString()
 
             if(email.isEmpty()) {
-                log_in_email_layout.error = "이메일을 입력해주세요"
-                Toast.makeText(this, "이메일을 입력해주세요", Toast.LENGTH_SHORT).show()
+                log_in_email_layout.error = "아이디를 입력해주세요"
+                Toast.makeText(this, "아이디를 입력해주세요", Toast.LENGTH_SHORT).show()
+            }
+            else if(!emailFormatCheck(email)) {
+                Toast.makeText(this, "아이디 형식이 아닙니다", Toast.LENGTH_SHORT).show()
+                log_in_email_layout.error = "아이디 형식이 아닙니다"
             }
             else if(password.isEmpty()) {
                 log_in_password_layout.error = "비밀번호를 입력해주세요"
@@ -121,7 +127,13 @@ class LogInActivity : AppCompatActivity() {
                                 "로그인 성공",
                                 Toast.LENGTH_SHORT).show()
 
-                            onBackPressed()
+//                            intent.putExtra("activity change", 1)
+//                            onBackPressed()
+                            val intent = Intent(this@LogInActivity, MainActivity::class.java)
+                            intent.putExtra("activity change", 1)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
                         }
                         else {
                             AlertDialog.Builder(this@LogInActivity)
@@ -155,7 +167,12 @@ class LogInActivity : AppCompatActivity() {
     }
 
     private fun hideKeypad(view: View) {
+        view.clearFocus()
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun emailFormatCheck(email: String): Boolean {
+        return Pattern.matches("^[a-zA-Z0-9]+$", email)
     }
 }

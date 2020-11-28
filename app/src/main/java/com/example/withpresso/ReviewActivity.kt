@@ -56,15 +56,6 @@ class ReviewActivity : AppCompatActivity() {
                 R.id.review_rest_very_clean_radio -> review.rest_clean = 5
             }
         }
-        review_staff_kind_group.setOnCheckedChangeListener { group, checkedId ->
-            when(review_staff_kind_group.checkedRadioButtonId) {
-                R.id.review_staff_very_unkind_radio -> review.kind = 1
-                R.id.review_staff_unkind_radio -> review.kind = 2
-                R.id.review_staff_soso_radio -> review.kind = 3
-                R.id.review_staff_kind_card -> review.kind = 4
-                R.id.review_staff_very_kind_radio -> review.kind = 5
-            }
-        }
         review_atmo_group.setOnCheckedChangeListener { group, checkedId ->
             when(review_atmo_group.checkedRadioButtonId) {
                 R.id.review_atmo_very_quiet_radio -> review.atmo = 1
