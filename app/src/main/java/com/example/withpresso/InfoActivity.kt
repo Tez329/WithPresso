@@ -24,6 +24,7 @@ import com.example.withpresso.adapter.CafeRecyclerViewAdapter
 import com.example.withpresso.adapter.ExpandableListAdapter
 import com.example.withpresso.service.AuthCodeCheckService
 import com.example.withpresso.service.CafeInfo
+import com.example.withpresso.service.CafeInfoService
 import kotlinx.android.synthetic.main.activity_info.*
 import kotlinx.android.synthetic.main.cafe_detail_info.view.*
 import kotlinx.android.synthetic.main.review_dialog_layout.view.*
@@ -73,6 +74,31 @@ class InfoActivity: AppCompatActivity() {
         }
 
         /* setOnClickListener */
+        cafe_info_swipe.setOnRefreshListener {
+            /* 서버에 카페 정보 요청 */
+            val cafeInfoService = retrofit.create(CafeInfoService::class.java)
+            cafeInfoService.requestCafeInfo(cafeInfo.cafe_asin).enqueue(object :Callback<CafeInfo> {
+                /* 통신 실패 시 실행 */
+                override fun onFailure(call: Call<CafeInfo>, t: Throwable) {
+                    Log.d("request cafeinfo failed", t.message.toString())
+                    android.app.AlertDialog.Builder(this@InfoActivity)
+                        .setTitle("카페 정보 불러오기 실패")
+                        .setMessage("통신 오류")
+                        .show()
+                }
+                /* 통신 성공 시 실행 */
+                override fun onResponse(call: Call<CafeInfo>, response: Response<CafeInfo>) {
+                    Log.d("retrofit", "executed")
+                    val updatedCafeInfo = response.body()
+                    updatedCafeInfo?.let{
+                        cafeInfo = it
+                        onResume()
+                    }
+                }
+            })
+
+            cafe_info_swipe.isRefreshing = false
+        }
         info_back_button.setOnClickListener { onBackPressed() }
 
         /* 세부 정보 자세히 보기 */
