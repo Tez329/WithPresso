@@ -2,31 +2,52 @@ package com.example.withpresso
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import com.example.withpresso.service.RatingService
+import com.example.withpresso.service.ReviewWriteService
 import kotlinx.android.synthetic.main.activity_review.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.jetbrains.anko.toast
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 data class Review(
     var cafe_clean: Int,
     var rest_clean: Int,
-    var kind: Int,
     var atmo: Int,
-    var studied_well: Int,
-    var comment: String
+    var studied_well: Int
 )
 
+@Suppress("IMPLICIT_CAST_TO_ANY")
 class ReviewActivity : AppCompatActivity() {
     private lateinit var review: Review
+    private lateinit var pref: SharedPreferences
+    private lateinit var retrofit: Retrofit
+    private lateinit var BASE_URL: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review)
 
         /* init */
-        review = Review(0, 0, 0, 0, 0, "")
+        review = Review(0, 0, 0, 0)
+        pref = getSharedPreferences("user_info", 0)
+        BASE_URL = "https://withpresso.gq"
+        retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
         /* setOnClickListener */
         review_back_button.setOnClickListener { onBackPressed() }
@@ -90,13 +111,67 @@ class ReviewActivity : AppCompatActivity() {
                 Toast.makeText(this, "화장실은 깨끗했나요?", Toast.LENGTH_SHORT).show()
             else if(review.atmo == 0)
                 Toast.makeText(this, "매장 분위기는 괜찮았나요?", Toast.LENGTH_SHORT).show()
-            else if(review.kind == 0)
-                Toast.makeText(this, "직원은 친절했나요?", Toast.LENGTH_SHORT).show()
             else if(review.studied_well == 0)
                 Toast.makeText(this, "공부는 잘 됐나요?", Toast.LENGTH_SHORT).show()
+            else if (review_comment_edit.textSize > 400)
+                toast("의견은 400자 이내로 작성해주세요")
             else{
-                /* 서버에 쿠폰 발급 요청 */
-                Toast.makeText(this, "쿠폰이 발급됐습니다!", Toast.LENGTH_SHORT).show()
+                val cafe_asin = intent.getIntExtra("cafe_asin", 0)
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    val ratingService = retrofit.create(RatingService::class.java)
+                    ratingService.requestReflectRating(
+                        review.cafe_clean, review.rest_clean, review.atmo, review.studied_well,
+                        cafe_asin, pref.getInt("uniq_num", 0)
+                    ).enqueue(object : Callback<Int> {
+                        override fun onFailure(call: Call<Int>, t: Throwable) {
+                            Log.e("rating service failed", t.message!!)
+                        }
+
+                        override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                            val result = response.body()
+                            result?.let {
+                                if (result == 1) {
+                                    this@launch.launch(Dispatchers.Main) {
+                                        toast("평점이 잘 전달됐습니다")
+                                    }
+                                    Log.d("rating service", "success")
+                                }
+                            }
+                        }
+                    })
+                }
+
+                if (!review_comment_edit.text.isNullOrBlank()) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val reviewWriteService = retrofit.create(ReviewWriteService::class.java)
+                        reviewWriteService.requestWriteReview(
+                            pref.getInt("uniq_num", 0), cafe_asin, review_comment_edit.text.toString()
+                        ).enqueue(object : Callback<Int> {
+                            override fun onFailure(call: Call<Int>, t: Throwable) {
+                                Log.e("comment service failed", t.message!!)
+                            }
+
+                            override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                                val result = response.body()
+                                result?.let {
+                                    if (result == 1) {
+                                        this@launch.launch(Dispatchers.Main) {
+                                            toast("소중한 의견이 잘 전달됐습니다")
+                                        }
+                                        Log.d("comment service", "success")
+                                    }
+                                    else {
+                                        this@launch.launch(Dispatchers.Main) {
+                                            toast("리뷰를 전달하는데 실패했습니다")
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                    }
+                }
+
                 onBackPressed()
             }
         }

@@ -15,9 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MapActivity">
-        </activity>
-
+        <activity android:name=".CommentActivity"></activity>
+        <activity android:name=".MapActivity"></activity>
         <activity android:name=".CouponActivity" />
         <activity android:name=".MyPageActivity" />
         <activity android:name=".MainActivity">
@@ -40,11 +39,9 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
         <meta-data
             android:name="com.naver.maps.map.aesql5iy5k"
             android:value="aesql5iy5k" />
-
     </application>
 
 </manifest>

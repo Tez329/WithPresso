@@ -66,7 +66,6 @@ class InfoActivity: AppCompatActivity() {
         cafeInfo = intent.getSerializableExtra("cafe_info") as CafeInfo
         cafeInfo.let {
             val date = it.anco_data.split("/")
-            it.anco_data = "${date[0]}년 ${date[1]}월 ${date[2]}일"
             it.cafe_clean = Math.round((it.cafe_clean * 10)) / 10f
             it.rest_clean = Math.round((it.rest_clean * 10)) / 10f
             it.noise = Math.round((it.noise * 10)) / 10f
@@ -80,7 +79,7 @@ class InfoActivity: AppCompatActivity() {
         info_more_detail_button.setOnClickListener {
             val moreDetailInfo = LayoutInflater.from(this).inflate(R.layout.cafe_detail_info, null)
 
-            moreDetailInfo.info_detail_all_congestion_text.text = "혼잡도: 받아와서 보여주기"
+            moreDetailInfo.info_detail_all_congestion_text.text = "혼잡도: ${textConverter("level", cafeInfo.level)}"
             moreDetailInfo.info_detail_all_table_text.text =
                 "1인석/2인석/4인석/다인석: ${cafeInfo.table_struct}\n" +
                         "넓이(2인석 기준): " + "A4 ${cafeInfo.table_size}장"
@@ -137,7 +136,7 @@ class InfoActivity: AppCompatActivity() {
                         val authCode = reviewDialog.auth_code.text.toString()
                         val authCodeCheckService = retrofit.create(AuthCodeCheckService::class.java)
                         authCodeCheckService.requestAuthCodeCheck(
-                            pref.getInt("uniq_num", 0),
+                            cafeInfo.cafe_asin,
                             reviewDialog.phone_number_edit.text.toString(),
                             authCode
                         ).enqueue(object : Callback<Int> {
@@ -155,6 +154,7 @@ class InfoActivity: AppCompatActivity() {
                                         edit.apply()
 
                                         val intent = Intent(this@InfoActivity, ReviewActivity::class.java)
+                                        intent.putExtra("cafe_asin", cafeInfo.cafe_asin)
                                         startActivity(intent)
                                     }
                                     else
@@ -164,6 +164,14 @@ class InfoActivity: AppCompatActivity() {
                         })
                     }
                 }.show()
+        }
+
+        info_comment_button.setOnClickListener {
+            val mean_rating = (cafeInfo.cafe_clean + cafeInfo.rest_clean + cafeInfo.study_well + cafeInfo.noise) / 4
+            val intent = Intent(this, CommentActivity::class.java)
+            intent.putExtra("cafe_asin", cafeInfo.cafe_asin)
+            intent.putExtra("mean_rating", mean_rating)
+            startActivity(intent)
         }
     }
 
@@ -204,6 +212,8 @@ class InfoActivity: AppCompatActivity() {
         info_menu_text.text = "메뉴: " + "아직 없음."
 
         /* 세부 정보 */
+        info_congestion_text.text =
+            "혼잡도: ${textConverter("level", cafeInfo.level)}"
         info_table_text.text =
                         "1인석/2인석/4인석/다인석: ${cafeInfo.table_struct}\n" +
                         "넓이(2인석 기준): " + "A4 ${cafeInfo.table_size}장"
@@ -212,8 +222,6 @@ class InfoActivity: AppCompatActivity() {
                         "등받이: ${textConverter("chair_back", cafeInfo.chair_back)}"
         info_plug_text.text =
                         "개수: ${cafeInfo.num_plug}"
-        info_congestion_text.text =
-                        "혼잡도: 받아와서 보여주기"
     }
 
     private fun textConverter(category: String, value: Int): String? {
@@ -233,6 +241,12 @@ class InfoActivity: AppCompatActivity() {
             "smoking_room" -> {
                 if(value == 1) "있어요."
                 else "없어요."
+            }
+            "level" -> {
+                if (value == 1) "여유있어요"
+                else if (value == 2) "보통이에요"
+                else if (value == 3) "혼잡해요"
+                else    "영업 시간이 아니에요"
             }
             else -> null
         }

@@ -17,7 +17,6 @@
             style="@style/sign_in_title_style"
             android:text="@string/cafe_recommend" />
 
-
         <ImageView
             android:id="@+id/my_page_button"
             android:layout_width="40dp"

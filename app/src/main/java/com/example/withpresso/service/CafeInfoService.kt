@@ -18,6 +18,8 @@ data class CafeInfo (
     @SerializedName("cafe_tel") var cafe_tel:String,
     /* photo */
     @SerializedName("num_of_pics") var num_of_pics: Int,
+    /* congestion */
+    @SerializedName("complexity_level") var level: Int,
     /* table*/
     @SerializedName("table_info") var table_struct: String,
     @SerializedName("table_size_info") var table_size: String,

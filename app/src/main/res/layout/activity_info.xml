@@ -177,230 +177,253 @@
 
             </FrameLayout>
 
-            <!--basic information-->
-            <LinearLayout
-                android:id="@+id/info_basic_layout"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="기본 정보"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/info_oper_time_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Operating time"
-                    android:textSize="15sp" />
-                <TextView
-                    android:id="@+id/info_tel_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="8dp"
-                    android:text="telephone number"
-                    android:textSize="15sp" />
-                <TextView
-                    android:id="@+id/info_menu_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Menu"
-                    android:textSize="15sp" />
-            </LinearLayout>
-
-            <!--detail info-->
-            <LinearLayout
-                android:id="@+id/info_detail_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="10dp"
-                android:orientation="vertical">
+                android:layout_marginTop="10dp">
 
                 <LinearLayout
+                    android:id="@+id/info_basic_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="세부 정보"
+                        android:text="기본 정보"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
-                </LinearLayout>
-
-                <!--congestion-->
-                <LinearLayout
-                    android:id="@+id/info_detail_congestion_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/info_congestion_image"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center_vertical"
-                        app:srcCompat="@drawable/congestion" />
-
                     <TextView
-                        android:id="@+id/info_congestion_text"
+                        android:id="@+id/info_oper_time_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:lineSpacingExtra="8sp"
-                        android:text="congestion information" />
-                </LinearLayout>
-                <!--table-->
-                <LinearLayout
-                    android:id="@+id/info_detail_table_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/info_table_image"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center_vertical"
-                        app:srcCompat="@drawable/table" />
-
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Operating time"
+                        android:textSize="15sp" />
                     <TextView
-                        android:id="@+id/info_table_text"
+                        android:id="@+id/info_tel_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:lineSpacingExtra="8sp"
-                        android:text="Table information" />
-                </LinearLayout>
-
-                <!--chair-->
-                <LinearLayout
-                    android:id="@+id/info_detail_chair_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/info_chair_image"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center_vertical"
-                        app:srcCompat="@drawable/chair" />
-
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="8dp"
+                        android:text="telephone number"
+                        android:textSize="15sp" />
                     <TextView
-                        android:id="@+id/info_chair_text"
+                        android:id="@+id/info_menu_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:lineSpacingExtra="8sp"
-                        android:text="Chair information" />
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="8dp"
+                        android:text="Menu"
+                        android:textSize="15sp" />
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <!--basic information-->
 
-                <!--plug-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                >
+
+                <!--detail info-->
                 <LinearLayout
-                    android:id="@+id/info_detail_plug_layout"
+                    android:id="@+id/info_detail_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/info_plug_image"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center_vertical"
-                        app:srcCompat="@drawable/outlet" />
-
-                    <TextView
-                        android:id="@+id/info_plug_text"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:lineSpacingExtra="8sp"
-                        android:text="Plug information" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="세부 정보"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <!--congestion-->
+                    <LinearLayout
+                        android:id="@+id/info_detail_congestion_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/info_congestion_image"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_vertical"
+                            app:srcCompat="@drawable/congestion" />
+
+                        <TextView
+                            android:id="@+id/info_congestion_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:lineSpacingExtra="8sp"
+                            android:text="congestion information" />
+                    </LinearLayout>
+                    <!--table-->
+                    <LinearLayout
+                        android:id="@+id/info_detail_table_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/info_table_image"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_vertical"
+                            app:srcCompat="@drawable/table" />
+
+                        <TextView
+                            android:id="@+id/info_table_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:lineSpacingExtra="8sp"
+                            android:text="Table information" />
+                    </LinearLayout>
+
+                    <!--chair-->
+                    <LinearLayout
+                        android:id="@+id/info_detail_chair_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/info_chair_image"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_vertical"
+                            app:srcCompat="@drawable/chair" />
+
+                        <TextView
+                            android:id="@+id/info_chair_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:lineSpacingExtra="8sp"
+                            android:text="Chair information" />
+                    </LinearLayout>
+
+                    <!--plug-->
+                    <LinearLayout
+                        android:id="@+id/info_detail_plug_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/info_plug_image"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_vertical"
+                            app:srcCompat="@drawable/outlet" />
+
+                        <TextView
+                            android:id="@+id/info_plug_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:lineSpacingExtra="8sp"
+                            android:text="Plug information" />
+                    </LinearLayout>
                 </LinearLayout>
 
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <TableRow
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/coupon_outline"
+                    android:divider="@android:color/darker_gray"
+                    android:dividerPadding="2dp"
+                    android:showDividers="middle|beginning">
 
                     <Button
                         android:id="@+id/info_more_detail_button"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:background="@drawable/rounded_button_background"
+                        android:background="#00ff0000"
                         android:paddingStart="15dp"
                         android:paddingEnd="15dp"
-                        android:text="자세히 보기"
-                        app:layout_constraintEnd_toStartOf="@+id/info_map_button"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent" />
+                        android:text="자세히 보기" />
 
                     <Button
                         android:id="@+id/info_map_button"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:background="#00ff0000"
                         android:paddingStart="15dp"
                         android:paddingEnd="15dp"
-                        android:background="@drawable/rounded_button_background"
-                        android:text="지도 보기"
-                        app:layout_constraintEnd_toStartOf="@+id/info_review_button"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/info_more_detail_button"
-                        tools:layout_editor_absoluteY="0dp" />
+                        android:text="지도 보기" />
 
                     <Button
                         android:id="@+id/info_review_button"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:background="#00ff0000"
                         android:paddingStart="15dp"
                         android:paddingEnd="15dp"
-                        android:background="@drawable/rounded_button_background"
-                        android:text="리뷰 남기기"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/info_map_button"
-                        tools:layout_editor_absoluteY="0dp" />
+                        android:text="리뷰 남기기" />
 
+                    <Button
+                        android:id="@+id/info_comment_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="#00ff0000"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="15dp"
+                        android:text="리뷰 보기" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </LinearLayout>
+                </TableRow>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
     </ScrollView>

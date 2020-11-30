@@ -9,7 +9,7 @@ interface AuthCodeCheckService {
     @FormUrlEncoded
     @POST("/customer/auth_code/")
     fun requestAuthCodeCheck (
-        @Field("user_asin") user_asin: Int,
+        @Field("cafe_asin") cafe_asin: Int,
         @Field("phone_num") phone_num: String,
         @Field("auth_code") auth_code: String
     ): Call<Int>

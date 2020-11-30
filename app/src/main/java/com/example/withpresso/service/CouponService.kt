@@ -12,7 +12,7 @@ data class Coupon (
     // 2. 쿠폰 고유 번호
     @SerializedName("coupon_asin") var coupon_asin: String,
     // 3. 할인율
-    @SerializedName("discount") var discount: String,
+    @SerializedName("discount_rate") var discount: String,
     // 4. 카페 이름
     @SerializedName("cafe_name") var cafe_name: String,
     // 5. 쿠폰 종류 (리뷰 또는 3시간)
@@ -20,16 +20,15 @@ data class Coupon (
     // 6. 유효기간
     @SerializedName("validity") var validity: String,
     // 7. 쿠폰 코드
-    @SerializedName("coupon_code") var coupon_code: String
+    @SerializedName("coupon_code") var coupon_code: String,
+    // 8. 유저 고유 번호
+    @SerializedName("user_asin") var user_asin: Int
 ): Serializable
 
-data class CouponList (
-    @SerializedName("coupon_list") var coupon_list: List<Coupon>
-): Serializable
 
 interface CouponService {
-    @GET("/customer/coupon/")
+    @GET("/customer/coupon/check")
     fun requestCoupon (
         @Query("user_asin") user_asin: Int
-    ): Call<CouponList>
+    ): Call<List<Coupon>>
 }

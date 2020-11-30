@@ -227,7 +227,7 @@ class MyPageActivity : AppCompatActivity() {
                                     /* pref에 이미지 이름 저장하기 */
                                     val fileName = file.name
                                     val edit = pref.edit()
-                                    edit.putString("profile", fileName)
+                                    edit.putString("profile", "1.jpg")
                                     edit.commit()
 
                                     /* Glide를 사용해서 image view 그리기 */
