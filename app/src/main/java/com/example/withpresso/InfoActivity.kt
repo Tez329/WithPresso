@@ -292,7 +292,7 @@ class InfoActivity: AppCompatActivity() {
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(picto)
-                info.text = "자리 당 ${cafeInfo.num_plug}개"
+                info.text = "콘센트 ${cafeInfo.num_plug}개"
             }
             5-> {
                 Glide.with(this)
