@@ -63,4 +63,5 @@
     <string name="review_comment">리뷰 내용</string>
     <string name="review_point">리뷰 점수:</string>
     <string name="total_num_of_review">전체 리뷰 개수:</string>
+    <string name="id">아이디</string>
 </resources>

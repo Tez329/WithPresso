@@ -52,8 +52,7 @@
         android:fontFamily="@font/basic"
         android:padding="4dp"
         android:text="@string/my_page_nickname"
-        android:textSize="16sp"
-        android:textStyle="italic" />
+        android:textSize="16sp" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -76,9 +75,8 @@
                 android:layout_weight="4"
                 android:fontFamily="@font/basic"
                 android:padding="4dp"
-                android:text="@string/email"
-                android:textSize="16sp"
-                android:textStyle="italic"/>
+                android:text="@string/id"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/my_page_email_text"
@@ -90,8 +88,7 @@
                 android:fontFamily="@font/basic"
                 android:padding="4dp"
                 android:text="USER EMAIL"
-                android:textSize="16sp"
-                android:textStyle="italic"/>
+                android:textSize="16sp" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
@@ -132,8 +129,7 @@
                 android:padding="4dp"
                 android:paddingEnd="20dp"
                 android:text="@string/coupon"
-                android:textSize="16sp"
-                android:textStyle="italic" />
+                android:textSize="16sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -168,8 +164,7 @@
                 android:padding="4dp"
                 android:paddingEnd="20dp"
                 android:text="@string/survey"
-                android:textSize="16sp"
-                android:textStyle="italic" />
+                android:textSize="16sp" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
@@ -206,8 +201,7 @@
                 android:padding="4dp"
                 android:paddingEnd="20dp"
                 android:text="@string/logout"
-                android:textSize="16sp"
-                android:textStyle="italic" />
+                android:textSize="16sp" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

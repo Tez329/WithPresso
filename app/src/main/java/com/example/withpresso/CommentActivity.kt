@@ -56,7 +56,7 @@ class CommentActivity : AppCompatActivity() {
                 toast("cafe_asin: ${cafe_asin}")
                 val mean_rating = intent.getFloatExtra("mean_rating", 0f)
                 total_ratingBar.rating = mean_rating
-                review_mean_point.text = "${getString(R.string.review_point)} ${mean_rating}"
+                review_mean_point.text = "${getString(R.string.review_point)} ${mean_rating}점"
 
                 total_num_of_review.text = "${getString(R.string.total_num_of_review)} ${commentList.size}개"
 

@@ -99,6 +99,7 @@ class CafeRecyclerViewAdapter(
                 .load(R.drawable.coffee)
                 .override(300)
                 .centerCrop()
+                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(imageView)
         }
@@ -108,6 +109,7 @@ class CafeRecyclerViewAdapter(
                 .override(300)
                 .centerCrop()
                 .error(R.drawable.coffee)
+                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(imageView)
         }

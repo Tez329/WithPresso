@@ -119,7 +119,7 @@ class LogInActivity : AppCompatActivity() {
                             edit.putString("email", email)
                             edit.putString("password", password)
                             edit.putString("nickname", userInfo.nickname)
-                            edit.putString("profile", userInfo.profile)
+                            edit.putString("profile", "1.jpg")
                             edit.apply()
 
                             Toast.makeText(

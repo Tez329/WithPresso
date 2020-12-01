@@ -132,9 +132,7 @@ class ReviewActivity : AppCompatActivity() {
                             val result = response.body()
                             result?.let {
                                 if (result == 1) {
-                                    this@launch.launch(Dispatchers.Main) {
-                                        toast("평점이 잘 전달됐습니다")
-                                    }
+                                    toast("평점이 잘 전달됐습니다")
                                     Log.d("rating service", "success")
                                 }
                             }
@@ -156,9 +154,7 @@ class ReviewActivity : AppCompatActivity() {
                                 val result = response.body()
                                 result?.let {
                                     if (result == 1) {
-                                        this@launch.launch(Dispatchers.Main) {
-                                            toast("소중한 의견이 잘 전달됐습니다")
-                                        }
+                                        toast("소중한 의견이 잘 전달됐습니다")
                                         Log.d("comment service", "success")
                                     }
                                     else {

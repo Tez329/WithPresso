@@ -32,6 +32,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.longToast
 import org.jetbrains.anko.support.v4.alert
 import org.jetbrains.anko.support.v4.toast
 import org.jetbrains.anko.toast
@@ -92,6 +93,13 @@ class InfoActivity: AppCompatActivity() {
                     val updatedCafeInfo = response.body()
                     updatedCafeInfo?.let{
                         cafeInfo = it
+                        cafeInfo.let {
+                            val date = it.anco_data.split("/")
+                            it.cafe_clean = Math.round((it.cafe_clean * 10)) / 10f
+                            it.rest_clean = Math.round((it.rest_clean * 10)) / 10f
+                            it.noise = Math.round((it.noise * 10)) / 10f
+                            it.study_well = Math.round((it.study_well * 10)) / 10f
+                        }
                         onResume()
                     }
                 }
@@ -144,56 +152,69 @@ class InfoActivity: AppCompatActivity() {
         }
 
         info_review_button.setOnClickListener {
-            reviewDialog.parent?.let { (reviewDialog.parent as ViewGroup).removeView(reviewDialog) }
-            pref.getString("phone_num", null)?.let {
-                reviewDialog.phone_number_edit.setText(it)
+            /*edit.putInt("uniq_num", user_uniq_num!!.toInt())
+                                edit.putString("email", email)
+                                edit.putString("password", password)
+                                edit.putString("nickname", nickname)
+                                edit.putString("phone_num", phone)*/
+            if (!(pref.contains("uniq_num") &&
+                        pref.contains("email") && pref.contains("password") &&
+                        pref.contains("nickname") && pref.contains("phone_num"))) {
+                longToast("회원 가입 이후에 리뷰를 남길 수 있습니다")
             }
+            else {
+                reviewDialog.parent?.let { (reviewDialog.parent as ViewGroup).removeView(reviewDialog) }
+                pref.getString("phone_num", null)?.let {
+                    reviewDialog.phone_number_edit.setText(it)
+                }
 
-            AlertDialog.Builder(this)
-                .setView(reviewDialog)
-                .setNegativeButton("취소하기") { dialogInterface: DialogInterface, i: Int -> }
-                .setPositiveButton("보내기") { dialogInterface: DialogInterface, i: Int ->
-                    /* 입력 받은 전화번호 서버로 보내기 */
-                    if (reviewDialog.auth_code.text.toString().isEmpty())
-                        toast("인증 코드를 입력해주세요")
-                    else if (reviewDialog.phone_number_edit.text.toString().isBlank())
-                        toast("휴대폰 번호를 입력해주세요")
-                    else {
-                        val authCode = reviewDialog.auth_code.text.toString()
-                        val authCodeCheckService = retrofit.create(AuthCodeCheckService::class.java)
-                        authCodeCheckService.requestAuthCodeCheck(
-                            cafeInfo.cafe_asin,
-                            reviewDialog.phone_number_edit.text.toString(),
-                            authCode
-                        ).enqueue(object : Callback<Int> {
-                            override fun onFailure(call: Call<Int>, t: Throwable) {
-                                Log.e("send msg request", "failed")
-                                alert("인증 코드 발송을 실패했습니다.")
-                            }
-
-                            override fun onResponse(call: Call<Int>, response: Response<Int>) {
-                                val result = response.body()
-                                result?.let {
-                                    if (result == 1) {
-                                        val edit = pref.edit()
-                                        edit.putString("phone_num", reviewDialog.phone_number_edit.text.toString())
-                                        edit.apply()
-
-                                        val intent = Intent(this@InfoActivity, ReviewActivity::class.java)
-                                        intent.putExtra("cafe_asin", cafeInfo.cafe_asin)
-                                        startActivity(intent)
-                                    }
-                                    else
-                                        toast("리뷰 인증에 실패했습니다")
+                AlertDialog.Builder(this)
+                    .setView(reviewDialog)
+                    .setNegativeButton("취소하기") { _: DialogInterface, _: Int -> }
+                    .setPositiveButton("보내기") { _: DialogInterface, _: Int ->
+                        /* 입력 받은 전화번호 서버로 보내기 */
+                        if (reviewDialog.auth_code.text.toString().isEmpty())
+                            toast("인증 코드를 입력해주세요")
+                        else if (reviewDialog.phone_number_edit.text.toString().isBlank())
+                            toast("휴대폰 번호를 입력해주세요")
+                        else {
+                            val authCode = reviewDialog.auth_code.text.toString()
+                            val authCodeCheckService = retrofit.create(AuthCodeCheckService::class.java)
+                            authCodeCheckService.requestAuthCodeCheck(
+                                cafeInfo.cafe_asin,
+                                reviewDialog.phone_number_edit.text.toString(),
+                                authCode
+                            ).enqueue(object : Callback<Int> {
+                                override fun onFailure(call: Call<Int>, t: Throwable) {
+                                    Log.e("send msg request", "failed")
+                                    alert("인증 코드 발송을 실패했습니다.")
                                 }
-                            }
-                        })
-                    }
-                }.show()
+
+                                override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                                    val result = response.body()
+                                    result?.let {
+                                        if (result == 1) {
+                                            val edit = pref.edit()
+                                            edit.putString("phone_num", reviewDialog.phone_number_edit.text.toString())
+                                            edit.apply()
+
+                                            val intent = Intent(this@InfoActivity, ReviewActivity::class.java)
+                                            intent.putExtra("cafe_asin", cafeInfo.cafe_asin)
+                                            startActivity(intent)
+                                        }
+                                        else
+                                            toast("리뷰 인증에 실패했습니다")
+                                    }
+                                }
+                            })
+                        }
+                    }.show()
+            }
         }
 
         info_comment_button.setOnClickListener {
-            val mean_rating = (cafeInfo.cafe_clean + cafeInfo.rest_clean + cafeInfo.study_well + cafeInfo.noise) / 4
+            var mean_rating = (cafeInfo.cafe_clean + cafeInfo.rest_clean + cafeInfo.study_well + cafeInfo.noise) / 4
+            mean_rating = Math.round(mean_rating * 10) / 10f
             val intent = Intent(this, CommentActivity::class.java)
             intent.putExtra("cafe_asin", cafeInfo.cafe_asin)
             intent.putExtra("mean_rating", mean_rating)
@@ -269,7 +290,7 @@ class InfoActivity: AppCompatActivity() {
                 else "없어요."
             }
             "level" -> {
-                if (value == 1) "여유있어요"
+                if (value == 1) "여유 있어요"
                 else if (value == 2) "보통이에요"
                 else if (value == 3) "혼잡해요"
                 else    "영업 시간이 아니에요"

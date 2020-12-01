@@ -36,12 +36,12 @@
         android:id="@+id/log_in_email_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="100dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="20dp"
         app:counterEnabled="true"
         app:counterMaxLength="20"
-        app:errorEnabled="true" >
+        app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/log_in_email_edit"
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:ems="10"
-            android:hint="@string/email"
+            android:hint="@string/id"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -58,8 +58,8 @@
         android:id="@+id/log_in_password_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         app:counterEnabled="true"
         app:counterMaxLength="20"
         app:errorEnabled="true"
@@ -81,13 +81,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="#00FFFFFF"
+        android:background="@drawable/rounded_button_background"
         android:text="@string/log_in" />
 
     <Button
         android:id="@+id/sign_up_mem_button"
         style="@style/sign_up_button"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="80dp"
+        android:layout_marginEnd="20dp"
         android:background="#8F8686"
         android:text="@string/sign_up" />
 
