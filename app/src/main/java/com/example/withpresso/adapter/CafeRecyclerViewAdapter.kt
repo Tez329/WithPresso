@@ -92,7 +92,6 @@ class CafeRecyclerViewAdapter(
         }
     }
 
-
     private fun drawCafePhoto(photoUrl: String?, imageView: ImageView) {
         if(photoUrl.isNullOrBlank()) {
             Glide.with(context)

@@ -284,6 +284,7 @@ class MyPageActivity : AppCompatActivity() {
             Glide.with(this)
                 .load(R.drawable.ic_baseline_person_24)
                 .centerCrop()
+                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(des)
         }

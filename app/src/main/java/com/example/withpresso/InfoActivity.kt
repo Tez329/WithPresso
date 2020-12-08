@@ -152,14 +152,8 @@ class InfoActivity: AppCompatActivity() {
         }
 
         info_review_button.setOnClickListener {
-            /*edit.putInt("uniq_num", user_uniq_num!!.toInt())
-                                edit.putString("email", email)
-                                edit.putString("password", password)
-                                edit.putString("nickname", nickname)
-                                edit.putString("phone_num", phone)*/
-            if (!(pref.contains("uniq_num") &&
-                        pref.contains("email") && pref.contains("password") &&
-                        pref.contains("nickname") && pref.contains("phone_num"))) {
+            if (!(pref.contains("uniq_num") && pref.contains("email") &&
+                        pref.contains("password") && pref.contains("nickname"))) {
                 longToast("회원 가입 이후에 리뷰를 남길 수 있습니다")
             }
             else {

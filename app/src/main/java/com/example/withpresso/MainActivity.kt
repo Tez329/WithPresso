@@ -68,7 +68,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var scope: CoroutineScope
 
     @RequiresApi(Build.VERSION_CODES.M)
-    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -255,7 +254,16 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
 
         /* gps 기능 멈추기 */
-        fusedLocationClient.removeLocationUpdates(locationCallback)
+        if (ActivityCompat.checkSelfPermission(
+                this, ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(
+                this, ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        else
+            fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
     /* 프로필 이미지 그리기 */
